@@ -1,0 +1,43 @@
+{
+  "0. Abstract": {
+    "문제 진술 (Problem Statement)": "",
+    "연구 공백 / 한계 (Research Gap / Limitations)": "",
+    "제안 방식 (Proposed Solution / Approach)": "",
+    "핵심 결과 (Key Results)": "",
+    "기여 요약 (Summary of Contribution)": ""
+  },
+  "1. Introduction": {
+    "문제 정의 (Problem)": "",
+    "배경 설명 (Background)": "",
+    "연구 공백 (Gap)": "",
+    "연구 동기 (Motivation)": ""
+  },
+  "2. Related Work": {
+    "기존 방법 요약 (Summary of Prior Approaches)": "",
+    "차별점 / 기여의 위치 (Positioning)": "",
+    "연구 커버리지 적절성 (Coverage of Related Work)": "",
+    "최신성 반영 (Currency of References)": ""
+  },
+  "3. Method": {
+    "제안 방법 개요 (Approach)": "",
+    "핵심 아이디어 (Insight)": "",
+    "방법의 구성 요소 (Components)": "",
+    "기존 방법과의 차이 (Novelty)": ""
+  },
+  "4. Experiment / Results": {
+    "실험 구성 (Setup)": "",
+    "결과 요약 (Results)": "",
+    "주요 성과 해석 (Interpretation)": "",
+    "성능의 의의 (Significance)": "",
+    "문제 해결 효과 검증 (Effectiveness of Proposed Solution)": ""
+  },
+  "5. Discussion": {
+    "제약 조건 (Limitation)": "",
+    "응용 가능성 (Applicability)": ""
+  },
+  "6. Conclusion": {
+    "기여 요약 (Contribution Recap)": "",
+    "핵심 결과 요약 (Quantitative Summary of Key Findings)": "",
+    "연구의 함의 (Broader Impact)": ""
+  }
+}
