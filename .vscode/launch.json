@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "TreeLLM Quick Test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/quick_test.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "TreeLLM Example",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/example_usage.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "TreeLLM Web Interface",
+            "type": "python",
+            "request": "launch",
+            "module": "streamlit",
+            "args": ["run", "web_interface.py"],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        }
+    ]
+}
