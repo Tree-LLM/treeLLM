@@ -1,4 +1,4 @@
-[Agent 이름] BackgroundClarityAgent
+[USENIX guideline 담당 이름] BackgroundClarity
 
 [적용 섹션] Introduction, Related Work
 
