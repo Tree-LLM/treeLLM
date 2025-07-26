@@ -1,23 +1,63 @@
-다음은 논문의 Method 문단 중 하나입니다.  
-해당 문단에서 의미가 드러나는 항목만 아래 트리 구조에 맞춰 작성해주세요.
+다음은 논문의 Method 문단입니다.  
+해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
 
-※ 주의사항
-- 문단에 해당 내용이 없으면 `"없음"`이라고 작성해 주세요.
-- 이전 트리 상태는 알 수 없습니다. 이 문단에서 **새로 추출된 정보만** 입력해 주세요.
-- 다른 문단에서 나온 정보는 포함하지 말고, 이 문단에만 충실하세요.
-- 출력은 JSON 형식으로 해주세요.
+[목표]  
+이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
+단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
 
-[문단 내용]
-"""
-{{METHOD_PARAGRAPH}}
-"""
+---
 
-[트리 구조]
+[Chain-of-Thought 분석 절차]
+
+1. 이 문단에서 설명하는 **전체 구조나 모델 구성**은 무엇인가요?  
+   - 아키텍처 또는 방법론의 주요 구성 요소는 어떻게 연결되어 있나요?
+
+2. 각 구성 요소는 어떤 **기능과 역할**을 수행하나요?
+
+3. 설계 과정에서의 **중요한 선택**(예: 특정 기법 채택, 하이퍼파라미터, 데이터 처리 전략 등)은 어떤 근거로 이루어졌나요?
+
+4. 기존 방식과 비교하여 이 구조의 **차별성**이나 **장점**은 무엇인가요?
+
+---
+
+[출력 형식: JSON]
+
+```json
 {
-  "3. Method": {
-    "제안 방법 개요 (Approach)": "",
-    "핵심 아이디어 (Insight)": "",
-    "방법의 구성 요소 (Components)": "",
-    "기존 방법과의 차이 (Novelty)": ""
+  "Method": {
+    "제안 방법 개요 (Approach Overview)": "...",
+    "모델 구조 / 구성 요소 (Architecture / Components)": "...",
+    "핵심 설계 선택 (Design Choices)": "...",
+    "기존 방식과 차별점 (Differences from Baselines)": "..."
+  }
+}
+
+[주의사항]
+
+각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+
+단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+
+각 항목은 최대 2문장 이내로 요약해 주세요.
+
+학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
+
+[예시 입력 문단]
+
+"""
+We propose a dual-encoder architecture that maps both queries and passages into a shared embedding space.
+Each encoder consists of a pre-trained BERT followed by a projection layer.
+To capture query-passage relevance, we use dot-product scoring during training.
+Compared to bi-encoder baselines, we introduce contrastive loss with in-batch negatives to enhance discriminability.
+We also investigate the effect of using domain-specific BERT models.
+"""
+
+[예시 출력 JSON]
+{
+  "Method": {
+    "제안 방법 개요 (Approach Overview)": "질의와 문서를 동일 임베딩 공간에 매핑하는 dual-encoder 구조 제안",
+    "모델 구조 / 구성 요소 (Architecture / Components)": "BERT 기반 인코더 + 프로젝션 레이어로 구성된 쿼리/패시지 인코더, dot-product 기반 스코어링",
+    "핵심 설계 선택 (Design Choices)": "contrastive loss 적용, in-batch negative 사용, 도메인 특화 BERT 실험 포함",
+    "기존 방식과 차별점 (Differences from Baselines)": "기존 bi-encoder 대비 판별력 강화를 위한 contrastive 손실 도입"
   }
 }
