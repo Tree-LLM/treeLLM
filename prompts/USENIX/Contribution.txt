@@ -1,4 +1,4 @@
-[Agent 이름] ContributionAgent
+[USENIX guideline 담당 이름] Contribution
 
 [적용 섹션] Introduction, Related Work, Method
 
