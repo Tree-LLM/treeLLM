@@ -1,4 +1,4 @@
-[Agent 이름] GapValidationAgent
+[USENIX guideline 담당 이름] GapValidation
 
 [적용 섹션] Introduction, Related Work
 
