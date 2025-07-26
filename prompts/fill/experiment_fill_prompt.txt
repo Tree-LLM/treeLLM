@@ -1,24 +1,62 @@
-다음은 논문의 Experiment/Results 문단 중 하나입니다.  
-해당 문단에서 의미가 드러나는 항목만 아래 트리 구조에 맞춰 작성해주세요.
+다음은 논문의 Experiment 문단입니다.  
+해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
 
-※ 주의사항
-- 문단에 해당 내용이 없으면 `"없음"`이라고 작성해 주세요.
-- 이전 트리 상태는 알 수 없습니다. 이 문단에서 **새로 추출된 정보만** 입력해 주세요.
-- 다른 문단에서 나온 정보는 포함하지 말고, 이 문단에만 충실하세요.
-- 출력은 JSON 형식으로 해주세요.
+[목표]  
+이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
+단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
 
-[문단 내용]
-"""
-{{EXPERIMENT_PARAGRAPH}}
-"""
+---
 
-[트리 구조]
+[Chain-of-Thought 분석 절차]
+
+1. 어떤 **데이터셋**을 사용했으며, 어떤 작업(task) 또는 도메인에 속하나요?
+
+2. 실험에서 사용한 **비교 대상 모델(baseline)**과 **성능 평가 지표(metric)**는 무엇인가요?
+
+3. 주요 **성능 결과**는 어떠하며, **제안 기법이 어떤 측면에서 우수**했나요?
+
+4. 결과로부터 도출된 **해석이나 교훈(insight)**은 무엇인가요?
+
+---
+
+[출력 형식: JSON]
+
+```json
 {
-  "4. Experiment / Results": {
-    "실험 구성 (Setup)": "",
-    "결과 요약 (Results)": "",
-    "주요 성과 해석 (Interpretation)": "",
-    "성능의 의의 (Significance)": "",
-    "문제 해결 효과 검증 (Effectiveness of Proposed Solution)": ""
+  "Experiment": {
+    "실험 설정 / 데이터셋 (Setup / Dataset)": "...",
+    "비교 모델 및 지표 (Baselines / Metrics)": "...",
+    "핵심 성능 결과 (Key Results)": "...",
+    "결과 해석 / 시사점 (Insight / Implication)": "..."
+  }
+}
+
+[주의사항]
+
+각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+
+단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+
+각 항목은 최대 2문장 이내로 요약해 주세요.
+
+학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
+
+[예시 입력 문단]
+
+"""
+We evaluated our method on the MS MARCO and TREC DL benchmarks.
+Compared to BM25, DPR, and ColBERT, our model achieves higher NDCG and MRR scores.
+Notably, we observe a 7% absolute improvement in MRR over BM25 on MS MARCO.
+This demonstrates that modeling query-document structure enhances retrieval accuracy.
+"""
+
+[예시 출력 JSON]
+
+{
+  "Experiment": {
+    "실험 설정 / 데이터셋 (Setup / Dataset)": "MS MARCO와 TREC DL 벤치마크를 사용",
+    "비교 모델 및 지표 (Baselines / Metrics)": "BM25, DPR, ColBERT와 비교; 평가 지표는 NDCG 및 MRR",
+    "핵심 성능 결과 (Key Results)": "MS MARCO에서 BM25 대비 MRR 7% 향상",
+    "결과 해석 / 시사점 (Insight / Implication)": "질의-문서 구조를 모델링함으로써 검색 정확도 향상 가능성 입증"
   }
 }
