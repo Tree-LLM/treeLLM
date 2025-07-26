@@ -1,21 +1,63 @@
-다음은 논문의 Discussion 문단 중 하나입니다.  
-해당 문단에서 의미가 드러나는 항목만 아래 트리 구조에 맞춰 작성해주세요.
+다음은 논문의 Discussion 문단입니다.  
+해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
 
-※ 주의사항
-- 문단에 해당 내용이 없으면 `"없음"`이라고 작성해 주세요.
-- 이전 트리 상태는 알 수 없습니다. 이 문단에서 **새로 추출된 정보만** 입력해 주세요.
-- 다른 문단에서 나온 정보는 포함하지 말고, 이 문단에만 충실하세요.
-- 출력은 JSON 형식으로 해주세요.
+[목표]  
+이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
+단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
 
-[문단 내용]
-"""
-{{DISCUSSION_PARAGRAPH}}
-"""
+---
 
-[트리 구조]
+[Chain-of-Thought 분석 절차]
+
+1. 이 논문을 통해 얻은 **핵심 교훈 또는 시사점**은 무엇인가요?  
+   - 해당 교훈은 연구자나 실무자에게 어떤 가치를 주나요?
+
+2. 이 교훈은 **다른 맥락이나 분야에도 일반화**될 수 있나요?  
+   - 아니면 특정 조건에 국한되나요?
+
+3. 논문에서 명시한 **한계나 제약 사항**은 무엇이며,  
+   그로 인해 해석이나 적용에 어떤 주의가 필요한가요?
+
+4. 이러한 교훈과 한계를 통해 제시된 **후속 연구 방향**이 있다면 어떤 내용인가요?
+
+---
+
+[출력 형식: JSON]
+
+```json
 {
-  "5. Discussion": {
-    "제약 조건 (Limitation)": "",
-    "응용 가능성 (Applicability)": ""
+  "Discussion": {
+    "교훈 요약 (Lesson Summary)": "...",
+    "일반화 가능성 (Generalizability)": "...",
+    "한계 / 제약 사항 (Limitations)": "...",
+    "후속 연구 방향 (Future Directions)": "..."
   }
+}
+
+[주의사항]
+
+각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+
+단 한 문장이라도 명확하지 않다면 **"없음"**이라고 기입하세요.
+
+각 항목은 최대 2문장 이내로 요약해 주세요.
+
+학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
+
+[예시 입력 문단]
+
+"""
+Our system highlights the trade-off between real-time personalization and model stability, suggesting adaptive prompt regulation.
+While promising, its performance may vary in noisy environments with sparse feedback.
+This study encourages exploration into prompt calibration techniques and long-term user adaptation strategies.
+"""
+
+[예시 출력 JSON]
+{
+"Discussion": {
+"교훈 요약 (Lesson Summary)": "실시간 개인화와 모델 안정성 간의 균형이 중요하며, 적응형 프롬프트 조정이 효과적임을 시사",
+"일반화 가능성 (Generalizability)": "피드백이 충분한 환경에서는 일반화 가능하나, 잡음 많은 환경에서는 성능 저하 우려",
+"한계 / 제약 사항 (Limitations)": "피드백 데이터가 부족한 상황에서 성능 불안정성이 존재",
+"후속 연구 방향 (Future Directions)": "장기 사용자 적응 전략 및 프롬프트 보정 기법에 대한 연구가 필요함"
+}
 }
