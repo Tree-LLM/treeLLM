@@ -1,4 +1,4 @@
-다음은 논문의 Method 문단입니다.  
+다음은 논문의 Related Work 문단입니다.  
 해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
 
 [목표]  
@@ -9,14 +9,14 @@
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 문단에서 설명하는 **전체 구조나 모델 구성**은 무엇인가요?  
-   - 아키텍처 또는 방법론의 주요 구성 요소는 어떻게 연결되어 있나요?
+1. 이 문단에서 언급된 **핵심 관련 연구**는 무엇인가요?  
+   - 어떤 기술 또는 접근 방식이 주로 인용되었나요?
 
-2. 각 구성 요소는 어떤 **기능과 역할**을 수행하나요?
+2. 각 관련 연구가 어떤 **성과**를 보였고, 어떤 **한계**를 갖고 있었나요?
 
-3. 설계 과정에서의 **중요한 선택**(예: 특정 기법 채택, 하이퍼파라미터, 데이터 처리 전략 등)은 어떤 근거로 이루어졌나요?
+3. 제안 논문이 기존 연구와 **어떤 차별점**을 가지는지 명확히 설명되었나요?
 
-4. 기존 방식과 비교하여 이 구조의 **차별성**이나 **장점**은 무엇인가요?
+4. 이 문단이 **기술적 계보**를 어떻게 정리하고 있나요?
 
 ---
 
@@ -24,11 +24,11 @@
 
 ```json
 {
-  "Method": {
-    "제안 방법 개요 (Approach Overview)": "...",
-    "모델 구조 / 구성 요소 (Architecture / Components)": "...",
-    "핵심 설계 선택 (Design Choices)": "...",
-    "기존 방식과 차별점 (Differences from Baselines)": "..."
+  "Related Work": {
+    "핵심 인용 연구 (Key Cited Works)": "...",
+    "기존 연구 성과 요약 (Summary of Prior Results)": "...",
+    "기존 연구 한계 (Limitations of Prior Work)": "...",
+    "본 논문과의 차별점 (Distinction from Prior Work)": "..."
   }
 }
 
@@ -45,19 +45,19 @@
 [예시 입력 문단]
 
 """
-We propose a dual-encoder architecture that maps both queries and passages into a shared embedding space.
-Each encoder consists of a pre-trained BERT followed by a projection layer.
-To capture query-passage relevance, we use dot-product scoring during training.
-Compared to bi-encoder baselines, we introduce contrastive loss with in-batch negatives to enhance discriminability.
-We also investigate the effect of using domain-specific BERT models.
+Several approaches have attempted to improve summarization with reinforcement learning.
+Notably, Paulus et al. (2018) combined policy gradient with ROUGE reward to fine-tune sequence-to-sequence models.
+Chen and Bansal (2018) introduced actor-critic methods with intermediate rewards based on sentence quality.
+However, these approaches often suffer from instability and require extensive hyperparameter tuning.
+Unlike prior work, our method does not rely on external rewards and instead optimizes a contrastive signal derived from document-level coherence.
 """
 
 [예시 출력 JSON]
 {
-  "Method": {
-    "제안 방법 개요 (Approach Overview)": "질의와 문서를 동일 임베딩 공간에 매핑하는 dual-encoder 구조 제안",
-    "모델 구조 / 구성 요소 (Architecture / Components)": "BERT 기반 인코더 + 프로젝션 레이어로 구성된 쿼리/패시지 인코더, dot-product 기반 스코어링",
-    "핵심 설계 선택 (Design Choices)": "contrastive loss 적용, in-batch negative 사용, 도메인 특화 BERT 실험 포함",
-    "기존 방식과 차별점 (Differences from Baselines)": "기존 bi-encoder 대비 판별력 강화를 위한 contrastive 손실 도입"
+  "Related Work": {
+    "핵심 인용 연구 (Key Cited Works)": "Paulus et al.(2018), Chen and Bansal(2018) 등 강화학습 기반 요약 방법",
+    "기존 연구 성과 요약 (Summary of Prior Results)": "정책 경사, actor-critic 기반 보상으로 요약 성능 개선 시도",
+    "기존 연구 한계 (Limitations of Prior Work)": "불안정성, 많은 하이퍼파라미터 튜닝 필요",
+    "본 논문과의 차별점 (Distinction from Prior Work)": "외부 보상 없이 문서 수준 일관성에 기반한 contrastive signal 최적화"
   }
 }
