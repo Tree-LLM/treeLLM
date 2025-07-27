@@ -26,28 +26,20 @@
 → 이 Chain of Thought 과정을 거친 후, **수정이 필요한 문단만 골라** 아래 형식으로 출력하세요.
 
 ---
-[입력 예시]
-[
-  {
-    "id": "Introduction-1",
-    "summary": "객관적 바이오마커가 우울증 평가에 실패하면서, 자가 보고 방식이 대안으로 사용되고 있다."
-  },
-  {
-    "id": "Introduction-2",
-    "summary": "우울증 환자의 증상을 평가하는 주요 수단은 임상 인터뷰와 자가 보고 설문이다."
-  },
-  {
-    "id": "Method-1",
-    "summary": "모델은 XGBoost 기반이며, 구조는 기존 연구와 유사하다."
-  }
-]
 
+### [입력 1: 1차 수정 문단]
 
-[출력 예시]
+"""
+Self-reported tools such as clinical interviews and patient questionnaires are commonly used to assess depressive symptoms.  
+These methods offer convenience and the ability to capture patients’ subjective experiences, but they also present limitations in terms of quantifiability and consistency compared to objective measures.
+"""
+
+---
+
+### [입력 2: 전역 흐름 점검 결과]
 
 ```json
-[
-  {
+{
   "id": "Introduction-2",
   "issue": "중복",
   "cot": [
@@ -58,4 +50,13 @@
   "revision_suggestion": "Introduction-2는 Introduction-1과 의미가 거의 동일하므로 삭제하거나, 자가 보고 방식의 구체적인 예시(예: PHQ-9, GAD-7 등)를 중심으로 재구성하여 정보의 깊이를 더하세요."
 }
 
+
+[출력 예시]
+
+```json
+[
+  {
+  "id": "Introduction-2",
+  "final_revision": "Standardized self-report instruments such as the Patient Health Questionnaire-9 (PHQ-9) and the Generalized Anxiety Disorder-7 (GAD-7) are widely employed in clinical settings to evaluate symptoms of depression and anxiety. These tools consist of a brief set of questions that patients can complete independently, making them particularly useful in time-constrained environments. Their validated scoring systems allow for efficient symptom tracking and are frequently used to monitor treatment progress or determine clinical severity. While they offer ease of use and patient-centered insights, clinicians must remain aware of their limitations in capturing nuanced or context-specific information, highlighting the continued importance of clinical judgment alongside standardized measures."
+}
 ]
