@@ -78,23 +78,6 @@ this project aims to enable automatic parsing, logical consistency checking, and
 
 ---
 
-## 📁 파일 구성 예시
-project/
-├── parsed_sections/
-│ └── section1_paragraphs.json
-├── tree_data/
-│ └── section1_tree.json
-├── usenix_eval/
-│ └── usenix_eval.json
-├── revisions/
-│ ├── a_file.json # 문단별 수정안
-│ ├── b_file.json # 문단 요약 리스트
-│ ├── c_file.json # 전역 흐름 수정 가이드
-│ └── a_file.json # 최종 수정본 (업데이트됨)
-
-
----
-
 ## 📝 추가 설명
 
 - 모든 과정은 개별 실행 가능하며, 중단 후 재시작 시에도 단계별 결과를 기반으로 이어서 작업 가능
