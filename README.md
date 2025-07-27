@@ -17,7 +17,7 @@ this project aims to enable automatic parsing, logical consistency checking, and
 ### 1. 섹션 및 문단 구분
 - 전체 논문 텍스트를 섹션 단위로 분할
 - 각 문단에는 고유한 **섹션명 + 문단 번호** 부여  
-  *(예: Introduction-1, Method-3 등)*
+  *(예: Introduction-1, 1-1 등)*
 
 ---
 
