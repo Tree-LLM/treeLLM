@@ -3,19 +3,42 @@
 
 [목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+핵심 목표: Experiment에서 실험 환경, 데이터셋, 비교 모델, 지표, 성능 결과 및 시사점을 구조화된 세부 데이터로 뽑아내는 것.
 
 [Chain-of-Thought 분석 절차]
 
-1. 어떤 **데이터셋**을 사용했으며, 어떤 작업(task) 또는 도메인에 속하나요?
+답변 시 지침:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 데이터셋 이름, 지표명, 수치 반드시 그대로 기록
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: dataset name, accuracy, baseline))
 
-2. 실험에서 사용한 **비교 대상 모델(baseline)**과 **성능 평가 지표(metric)**는 무엇인가요?
+---
 
-3. 주요 **성능 결과**는 어떠하며, **제안 기법이 어떤 측면에서 우수**했나요?
+### 1. 실험 설정 / 데이터셋 (Setup / Dataset)
+포함할 내용:
+- 사용된 데이터셋 이름
+- 작업(Task) 유형 또는 도메인 (예: 이미지 분류, NLP, 의료 영상)
+- 실험 환경 관련 정보가 있다면 포함
 
-4. 결과로부터 도출된 **해석이나 교훈(insight)**은 무엇인가요?
+### 2. 비교 모델 및 지표 (Baselines / Metrics)
+포함할 내용:
+- 비교한 모델명 또는 기법명
+- 성능 평가 지표 (예: Accuracy, BLEU, F1 Score)
+- 원문 인용 포함
+
+### 3. 핵심 성능 결과 (Key Results)
+포함할 내용:
+- 주요 성능 결과 수치
+- 제안 기법이 기존 대비 얼마나 향상되었는지 (절대값, % 개선 등)
+- 표나 수치 그대로 기록
+
+### 4. 결과 해석 / 시사점 (Insight / Implication)
+포함할 내용:
+- 실험을 통해 얻은 해석
+- 왜 성능이 향상되었는지, 어떤 조건에서 강점/약점이 있는지
 
 ---
 
@@ -24,39 +47,21 @@
 ```json
 {
   "Experiment": {
-    "실험 설정 / 데이터셋 (Setup / Dataset)": "...",
-    "비교 모델 및 지표 (Baselines / Metrics)": "...",
-    "핵심 성능 결과 (Key Results)": "...",
-    "결과 해석 / 시사점 (Insight / Implication)": "..."
+    "실험 설정 / 데이터셋 (Setup / Dataset)": "... (데이터셋 이름, 작업, 환경 포함)",
+    "비교 모델 및 지표 (Baselines / Metrics)": "... (모델명, 지표명 명확히)",
+    "핵심 성능 결과 (Key Results)": "... (수치와 비교 결과 반드시)",
+    "결과 해석 / 시사점 (Insight / Implication)": "... (실무/이론적 시사점)"
   }
 }
 
 [주의사항]
 
-각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
 
-단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
 
-각 항목은 최대 2문장 이내로 요약해 주세요.
 
-학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
 
-[예시 입력 문단]
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
 
-"""
-We evaluated our method on the MS MARCO and TREC DL benchmarks.
-Compared to BM25, DPR, and ColBERT, our model achieves higher NDCG and MRR scores.
-Notably, we observe a 7% absolute improvement in MRR over BM25 on MS MARCO.
-This demonstrates that modeling query-document structure enhances retrieval accuracy.
-"""
-
-[예시 출력 JSON]
-
-{
-  "Experiment": {
-    "실험 설정 / 데이터셋 (Setup / Dataset)": "MS MARCO와 TREC DL 벤치마크를 사용",
-    "비교 모델 및 지표 (Baselines / Metrics)": "BM25, DPR, ColBERT와 비교; 평가 지표는 NDCG 및 MRR",
-    "핵심 성능 결과 (Key Results)": "MS MARCO에서 BM25 대비 MRR 7% 향상",
-    "결과 해석 / 시사점 (Insight / Implication)": "질의-문서 구조를 모델링함으로써 검색 정확도 향상 가능성 입증"
-  }
-}
+{INPUT}

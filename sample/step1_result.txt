@@ -1,0 +1,132 @@
+### abstract
+```json
+{
+  "Abstract": {
+    "문제 진술 (Problem Statement)": "본 연구는 시각장애인의 보행 중 충돌 위험을 예측하기 위한 모델을 제안한다. 사람은 보행 중 무의식적으로 자신의 진행 방향에 해당하는 공간을 인지하고, 그 안에서 발생할 수 있는 위험 요소를 감지하려는 경향을 보인다. (keywords: visually impaired, collision risk, pedestrian safety)",
+    "연구 공백 / 한계 (Research Gap / Limitations)": "기존의 보행 지원 시스템은 단일 프레임 기반의 객체 판단에 머무르고 있으며, 시계열적 변화나 공간적 맥락을 충분히 고려하지 못한다는 한계를 지닌다. (keywords: temporal analysis, spatial context, existing systems)",
+    "제안 방식 (Proposed Solution / Approach)": "본 연구에서는 사용자의 체형과 카메라 시야각을 기반으로 '충돌 가능 영역'을 정의하고, YOLO와 MiDaS 기반 모델을 통해 위치와 깊이 정보를 추출해 시계열 입력으로 구성하였다. 위치·IoU·깊이 정보는 각각 Conv1D와 Conv3D를 통해 시공간적 특징을 추출한 후, Conv1D–BiLSTM으로 시간적 패턴을 학습하여 충돌 여부를 이진 분류한다. (keywords: collision zone, YOLO, MiDaS, Conv1D, Conv3D, BiLSTM)",
+    "핵심 결과 (Key Results)": "IoU 단일 지표만으로도 AUROC 0.702의 분류 성능을 보여 그 유의성을 입증하였다. 최종 모델은 F1-score 0.7549를 기록하며 높은 예측 성능을 보였다. (keywords: AUROC, F1-score, performance)",
+    "기여 요약 (Summary of Contribution)": "첫째, 시각장애인의 보행 중 충돌 위험을 정량화하기 위해 정의된 충돌 가능 영역의 유효성을 자체 수집 데이터를 기반으로 통계적으로 검증하였다. 둘째, IoU 및 깊이 정보를 통합하여 설계한 충돌 예측 모델은 높은 정확도를 달성하였다. 셋째, 충돌 여부를 시계열 분류 문제로 정의하고 이를 실험적으로 평가하여, 실제 환경에서 활용 가능한 충돌 예측 모델의 가능성을 제시하였다. (keywords: statistical validation, model design, practical application)"
+  }
+}
+```
+
+### conclusion
+```json
+{
+  "Conclusion": {
+    "핵심 결론 / 기여 요약 (Key Conclusion / Contribution Summary)": "본 연구는 객체 인식, 충돌 가능 영역 정의, 깊이 추정, 그리고 시계열 정보를 통합하여 시각장애인의 보행 중 충돌 위험을 예측하는 모델을 제안하였다. 충돌 가능 영역과 해당 영역의 깊이 정보를 입력 특성으로 포함함으로써, 기존의 단순 위치 기반 예측보다 높은 정확도와 정밀도를 달성하였으며, 통계적 분석을 통해 해당 입력 특성들이 실제 충돌과 유의한 연관성을 가진다는 점도 입증하였다. (keywords: collision prediction, visually impaired, model integration)",
+    "전제 및 민감도 (Assumptions / Sensitivity)": "전제 조건에 대한 명시적인 언급은 없으나, 모델의 성능은 충돌 가능 영역과 깊이 정보의 정확성에 크게 의존할 것으로 보인다. (keywords: assumptions, sensitivity)",
+    "교훈 / 시사점 (Lesson / Implication)": "다양한 시간적‧공간적 정보를 효과적으로 결합하여 위험 상황을 사전에 인지하고 예측할 수 있는 구조를 처음 제시하였다는 점에서 실용적 가치가 높다. (keywords: practical value, risk prediction)",
+    "일반화 가능성 및 한계 (Generalizability / Limitation)": "향후 거리 (깊이) 추정이 가능한 센서나 스테레오 카메라 등의 보조 장비를 함께 활용할 경우, 예측 정확도를 더욱 높일 수 있을 것으로 기대된다. (keywords: generalizability, limitations)"
+  }
+}
+```
+
+### discussion
+```json
+{
+  "Discussion": {
+    "교훈 요약 (Lesson Summary)": "본 연구는 시각장애인의 보행 중 충돌 위험을 예측하기 위한 모델을 제안하였으며, 충돌 가능 영역과 깊이 정보를 활용하여 높은 예측 성능을 달성하였다. '충돌 가능 영역이 실제 충돌과 통계적으로 유의한 연관이 있는지를 자체 시뮬레이션 데이터를 통해 검증한 결과, IoU 단일 지표만으로도 AUROC 0.702의 분류 성능을 보여 그 유의성을 입증하였다.' (keywords: collision prediction, visually impaired, model validation)",
+    "일반화 가능성 (Generalizability)": "본 연구의 모델은 시각장애인의 보행 중 충돌 위험 예측에 특화되어 있으며, 다른 분야나 맥락에 대한 일반화 가능성은 명시되지 않았다. 그러나 '충돌 가능 영역과 관련된 입력들이 실제 충돌 위험과 통계적으로 연관됨을 확인할 수 있었다.'는 점에서 유사한 환경에서의 적용 가능성을 시사한다. (keywords: applicability, context-specific)",
+    "한계 / 제약 사항 (Limitations)": "본 연구는 '자체 수집한 충돌 시뮬레이션 데이터셋'을 기반으로 하였으며, 데이터의 다양성과 실제 환경에서의 적용 가능성에 대한 한계가 있을 수 있다. 또한, 'IoU 하나의 특성만으로도 AUROC 0.702의 성능을 보여'라는 점에서 단일 지표의 한계가 존재한다. (keywords: data limitations, single metric)",
+    "후속 연구 방향 (Future Directions)": "향후 연구에서는 '거리 (깊이) 추정이 가능한 센서나 스테레오 카메라 등의 보조 장비를 함께 활용할 경우, 예측 정확도를 더욱 높일 수 있을 것으로 기대된다.'는 점에서 기술적 발전 가능성을 제안하고 있다. (keywords: future research, sensor integration)"
+  }
+}
+```
+
+### experiment
+```json
+{
+  "Experiment": {
+    "실험 설정 / 데이터셋 (Setup / Dataset)": "본 연구에서는 모델의 학습과 평가를 위해 총 세 가지 데이터셋을 활용하였다. 첫 번째는 AI-Hub에서 제공하는 인도 보행 영상 Bounding Box 데이터셋으로, 약 35만 장의 이미지로 구성되어 있다. 두 번째는 동일한 인도 보행 영상 데이터 셋의 깊이 추정 데이터셋으로, 약 17만 장 이미지에 각 픽셀별 깊이 레이블이 포함되어 있다. 세 번째 데이터셋은 본 연구에서 직접 수집한 약 23만 장의 충돌 시뮬레이션 영상 데이터셋이다. (keywords: AI-Hub, depth estimation, simulation)",
+    "비교 모델 및 지표 (Baselines / Metrics)": "실험에는 세 가지 모델을 구성하였으며, 첫 번째는 객체의 바운딩 박스 정보만을 활용한 기본 모델(Base), 두 번째는 인식된 객체와 충돌 가능 영역 간의 IoU 특성을 추가한 모델(IOU), 세 번째는 IoU에 더해 해당 영역의 깊이 정보까지 포함한 모델(Depth)이다. (keywords: Base, IOU, Depth) 성능 평가 지표로는 Accuracy, Recall, Precision, F1-Score가 사용되었다. (keywords: metrics, F1-Score, evaluation)",
+    "핵심 성능 결과 (Key Results)": "표 1의 결과에서 바운딩 박스 정보만을 사용한 Base 모델은 F1-score 0.5091로 제한된 성능을 보였다. 반면, 충돌 가능 영역 기반 IoU 정보를 추가한 모델은 F1-score 0.6301로 성능이 향상되었고, 여기에 깊이 정보를 결합한 Depth 모델은 F1-score 0.7549로 가장 우수한 결과를 기록하였다. (keywords: F1-Score, performance, improvement)",
+    "결과 해석 / 시사점 (Insight / Implication)": "이는 공간적 위험 정보를 포함하는 입력이 충돌 예측 성능 향상에 실질적으로 기여함을 시사한다. 특히, 다양한 시간적‧공간적 정보를 효과적으로 결합하여 위험 상황을 사전에 인지하고 예측할 수 있는 구조를 처음 제시하였다는 점에서 실용적 가치가 높다. (keywords: spatial information, prediction, practical value)"
+  }
+}
+```
+
+### introduction
+```json
+{
+  "Introduction": {
+    "연구 배경 및 중요성 (Background & Significance)": "시각장애인의 독립적이고 안전한 보행은 시각장애인들의 삶의 질을 보장하기 위한 중요한 과제이다. 특히 보행 과정에서 발생할 수 있는 장애물이나 이동체와의 충돌 위험은 생명과 직결되는 심각한 문제로, 이를 사전에 인식하고 예방하는 기술적 대응이 요구된다. (keywords: motivation, significance, safety)",
+    "기존 접근 방식 요약 (Prior Approaches)": "최근 딥러닝 기반 객체 탐지 기술의 발전으로 다양한 환경에서의 객체 인식이 가능해졌지만, 대부분의 기존 보행 지원 시스템은 단일 프레임 기반의 객체 판단에 머무르고 있으며, 시계열적 변화나 공간적 맥락을 충분히 고려하지 못한다는 한계를 지닌다. (keywords: object detection, limitations, temporal context)",
+    "핵심 문제 정의 (Problem Definition)": "본 연구는 이러한 인지적 직관을 수학적으로 모델링 하여, 사용자를 기준으로 정의된 충돌 가능 영역이라는 개념을 중심으로 실제 보행중의 위험을 정량적으로 예측하는 모델을 제안한다. (keywords: problem, collision risk, modeling)",
+    "핵심 기여 요약 (Core Contributions)": "첫째, 시각장애인의 보행 중 충돌 위험을 정량화하기 위해 정의된 충돌 가능 영역의 유효성을 자체 수집 데이터를 기반으로 통계적으로 검증하고, 이를 통해 해당 영역 정보가 예측 지표로서 유의미함을 입증하였다. 둘째, 검증된 영역 관련 지표를 바탕으로, IoU 및 깊이 정보를 통합하여 설계한 충돌 예측 모델은 F1-score 0.7549의 성능을 기록하며 높은 정확도를 달성하였다. 셋째, 충돌 여부를 시계열 분류 문제로 정의하고 이를 실험적으로 평가하여, 실제 환경에서 활용 가능한 충돌 예측 모델의 가능성을 제시하였다. (keywords: contribution, validation, prediction model)"
+  }
+}
+```
+
+### method
+```json
+{
+  "Method": {
+    "제안 방법 개요 (Approach Overview)": "본 연구는 시각장애인의 보행 중 충돌 위험을 예측하기 위해 충돌 가능 영역을 정의하고, 이를 기반으로 위치와 깊이 정보를 활용하여 충돌 가능성을 정량화하는 모델을 제안한다. '이러한 분석을 기반으로, YOLO와 MiDaS 기반 모델을 통해 위치와 깊이 정보를 추출해 시계열 입력으로 구성하였다.' (keywords: collision prediction, visually impaired, quantitative analysis)",
+    "모델 구조 / 구성 요소 (Architecture / Components)": "모델은 네 단계로 구성된다: 1) YOLO v11 기반 객체 탐지로 객체의 위치 정보를 추출, 2) MiDaS 기반 깊이 추정으로 픽셀별 깊이 정보 예측, 3) 슬라이딩 윈도우 큐를 사용하여 시계열 데이터 관리, 4) Conv3D와 Conv1D-BiLSTM을 통해 시공간적 특징을 추출하고 충돌 여부를 예측. '위치·IoU·깊이 정보는 각각 Conv1D와 Conv3D를 통해 시공간적 특징을 추출한 후, Conv1D–BiLSTM으로 시간적 패턴을 학습하여 충돌 여부를 이진 분류한다.' (keywords: architecture, components, sequence analysis)",
+    "핵심 설계 선택 (Design Choices)": "YOLO v11을 사용하여 객체 탐지, MiDaS를 통해 깊이 추정, Conv3D와 Conv1D-BiLSTM을 통해 시공간적 특징 추출. 이러한 선택은 객체의 시계열적 움직임과 공간적 특성을 반영하여 충돌 가능성을 정량적으로 판단하기 위함이다. '위치·IoU·깊이 정보는 각각 Conv1D와 Conv3D를 통해 시공간적 특징을 추출한 후, Conv1D–BiLSTM으로 시간적 패턴을 학습하여 충돌 여부를 이진 분류한다.' (keywords: design choices, algorithm, strategy)",
+    "기존 방식과 차별점 (Differences from Baselines)": "기존 연구는 객체 인식에 초점을 맞추었으나, 본 연구는 연속 프레임 간 정보를 시계열적으로 해석하여 충돌 가능성을 정량적으로 분석한다는 점에서 차별성을 가진다. '본 연구는 연속 프레임 간 정보를 시계열적으로 해석하여 충돌 가능성을 정량적으로 분석한다는 점에서 기존 연구와 차별성을 가진다.' (keywords: baseline comparison, temporal analysis, innovation)"
+  }
+}
+```
+
+### related_work
+```json
+{
+  "Related Work": {
+    "핵심 인용 연구 (Key Cited Works)": [
+      {
+        "연구명": "시각장애인 보행보조를 위한 조도 적응형 실시간 객체 탐지",
+        "접근법": "YOLO를 이용한 객체 탐지기법",
+        "원문 인용": "시각장애인 보행 보조를 위한 조도 적응형 실시간 객체 탐지[1]에서는 YOLO를 이용하여 경고를 주는 객체 탐지기법을 제안하였다.",
+        "keywords": ["YOLO", "object detection", "real-time"]
+      },
+      {
+        "연구명": "딥러닝 기반 시각장애인 보행 보조 시스템",
+        "접근법": "YOLO 모델을 이용한 객체 인식 및 음성 피드백 제공",
+        "원문 인용": "딥러닝 기반 시각장애인 보행 보조 시스템[2] 연구에서는 YOLO 모델을 이용하여 사람, 차량 등 주요 객체를 인식하고 음성 피드백을 제공하는 시스템을 제안하였다.",
+        "keywords": ["YOLO", "deep learning", "feedback"]
+      },
+      {
+        "연구명": "A Real-Time Obstacle Detection and Classification System for Assisting Blind and Visually Impaired People Based on YOLO Model",
+        "접근법": "YOLO 모델에 Short-Term Memory (STM) 결합",
+        "원문 인용": "Erdaw et al.[3]은 YOLO 모델에 Short-Term Memory (STM)를 결합하여 객체 이동 정보를 반영하는 탐지 시스템을 제안하였다.",
+        "keywords": ["YOLO", "STM", "object movement"]
+      },
+      {
+        "연구명": "GloSea6에서 YOLOv8을 활용한 시각장애인 보행자 위험 감지",
+        "접근법": "YOLOv8을 활용한 객체의 이동 방향, 크기 변화율과 깊이 추정",
+        "원문 인용": "GloSea6에서 YOLOv8을 활용한 시각장애인 보행자 위험 감지[4] 연구에서는 객체의 이동 방향, 크기 변화율과 깊이 추정을 통해 이미지의 위험도를 측정하였다.",
+        "keywords": ["YOLOv8", "risk detection", "depth estimation"]
+      }
+    ],
+    "기존 연구 성과 요약 (Summary of Prior Results)": [
+      {
+        "성과": "객체 인식 기술을 활용하여 장애물을 탐지하고, 객체 정보를 기반으로 경고나 안내를 제공",
+        "원문 인용": "시각장애인 보행 지원을 위한 연구는 주로 객체 인식 기술을 활용하여 장애물을 탐지하고, 객체 정보를 기반으로 경고나 안내를 제공하는 방식에 초점을 맞추어왔다.",
+        "keywords": ["object detection", "guidance", "warning"]
+      }
+    ],
+    "기존 연구 한계 (Limitations of Prior Work)": [
+      {
+        "한계": "대부분의 기존 연구는 객체를 인식하는 연구에 초점을 맞추고 있으며, 탐지된 정보를 기반으로 정적인 위험 요소와 객체의 분류 만을 판단",
+        "원문 인용": "그러나 대부분의 기존 연구는 객체를 인식하는 연구에 초점을 맞추고 있으며, 탐지된 정보를 기반으로 정적인 위험 요소와 객체의 분류 만을 판단하는 방식이 주를 이루고 있다.",
+        "keywords": ["static risk", "object classification", "limitation"]
+      },
+      {
+        "한계": "비전 기반으로 탐지된 객체의 시계열 움직임을 분석하고, 이를 통해 충돌 위험성을 수치화하는 방식은 아직 충분히 다뤄지지 않았다.",
+        "원문 인용": "즉, 비전 기반으로 탐지된 객체의 시계열 움직임을 분석하고, 이를 통해 충돌 위험성을 수치화하는 방식은 아직 충분히 다뤄지지 않았다.",
+        "keywords": ["temporal analysis", "collision risk", "underexplored"]
+      }
+    ],
+    "본 논문과의 차별점 (Distinction from Prior Work)": [
+      {
+        "차별점": "연속 프레임 간 정보를 시계열적으로 해석하여 충돌 가능성을 정량적으로 분석",
+        "원문 인용": "본 연구는 연속 프레임 간 정보를 시계열적으로 해석하여 충돌 가능성을 정량적으로 분석한다는 점에서 기존 연구와 차별성을 가진다.",
+        "keywords": ["temporal interpretation", "quantitative analysis", "distinction"]
+      }
+    ]
+  }
+}
+```

@@ -3,20 +3,41 @@
 
 [목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+핵심 목표: Method에서 제안된 접근 개요, 모델 구조, 설계 선택, 기존 방식과 차별점을 구조화된 세부 데이터로 뽑아내는 것.
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 문단에서 설명하는 **전체 구조나 모델 구성**은 무엇인가요?  
-   - 아키텍처 또는 방법론의 주요 구성 요소는 어떻게 연결되어 있나요?
+답변 시 지침:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 모델명, 주요 모듈명, 단계별 구조 명확히 기록
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: architecture, module, optimization))
 
-2. 각 구성 요소는 어떤 **기능과 역할**을 수행하나요?
+---
 
-3. 설계 과정에서의 **중요한 선택**(예: 특정 기법 채택, 하이퍼파라미터, 데이터 처리 전략 등)은 어떤 근거로 이루어졌나요?
+### 1. 제안 방법 개요 (Approach Overview)
+포함할 내용:
+- 제안된 방법의 핵심 아이디어
+- 논문이 제시하는 전체적인 접근 방식
+- 1~2문장 요약 + 원문 인용
 
-4. 기존 방식과 비교하여 이 구조의 **차별성**이나 **장점**은 무엇인가요?
+### 2. 모델 구조 / 구성 요소 (Architecture / Components)
+포함할 내용:
+- 아키텍처 주요 블록 (예: Encoder, Decoder, Attention)
+- 각 모듈의 역할
+- 단계별 처리 과정
+
+### 3. 핵심 설계 선택 (Design Choices)
+포함할 내용:
+- 채택된 알고리즘, 하이퍼파라미터, 데이터 처리 전략
+- 선택 이유 또는 설계 근거
+
+### 4. 기존 방식과 차별점 (Differences from Baselines)
+포함할 내용:
+- 기존 접근과 비교한 구조적/기능적 차별성
+- 성능 향상을 기대하는 이유
 
 ---
 
@@ -25,39 +46,22 @@
 ```json
 {
   "Method": {
-    "제안 방법 개요 (Approach Overview)": "...",
-    "모델 구조 / 구성 요소 (Architecture / Components)": "...",
-    "핵심 설계 선택 (Design Choices)": "...",
-    "기존 방식과 차별점 (Differences from Baselines)": "..."
+    "제안 방법 개요 (Approach Overview)": "... (핵심 아이디어 + 원문 인용)",
+    "모델 구조 / 구성 요소 (Architecture / Components)": "... (주요 블록, 역할 명확히)",
+    "핵심 설계 선택 (Design Choices)": "... (구체적 이유 포함)",
+    "기존 방식과 차별점 (Differences from Baselines)": "... (명시된 차이와 장점)"
   }
 }
+
 
 [주의사항]
 
-각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
 
-단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
 
-각 항목은 최대 2문장 이내로 요약해 주세요.
 
-학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
 
-[예시 입력 문단]
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
 
-"""
-We propose a dual-encoder architecture that maps both queries and passages into a shared embedding space.
-Each encoder consists of a pre-trained BERT followed by a projection layer.
-To capture query-passage relevance, we use dot-product scoring during training.
-Compared to bi-encoder baselines, we introduce contrastive loss with in-batch negatives to enhance discriminability.
-We also investigate the effect of using domain-specific BERT models.
-"""
-
-[예시 출력 JSON]
-{
-  "Method": {
-    "제안 방법 개요 (Approach Overview)": "질의와 문서를 동일 임베딩 공간에 매핑하는 dual-encoder 구조 제안",
-    "모델 구조 / 구성 요소 (Architecture / Components)": "BERT 기반 인코더 + 프로젝션 레이어로 구성된 쿼리/패시지 인코더, dot-product 기반 스코어링",
-    "핵심 설계 선택 (Design Choices)": "contrastive loss 적용, in-batch negative 사용, 도메인 특화 BERT 실험 포함",
-    "기존 방식과 차별점 (Differences from Baselines)": "기존 bi-encoder 대비 판별력 강화를 위한 contrastive 손실 도입"
-  }
-}
+{INPUT}

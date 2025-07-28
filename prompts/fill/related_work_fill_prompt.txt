@@ -3,20 +3,39 @@
 
 [목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+핵심 목표: Related Work에서 핵심 인용 연구, 기존 연구의 성과와 한계, 본 논문과의 차별성을 구조화된 세부 데이터로 뽑아내는 것.
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 문단에서 언급된 **핵심 관련 연구**는 무엇인가요?  
-   - 어떤 기술 또는 접근 방식이 주로 인용되었나요?
+답변 시 지침:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 연구명, 접근법, 기법명 반드시 명시
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: baseline, limitation, comparison))
 
-2. 각 관련 연구가 어떤 **성과**를 보였고, 어떤 **한계**를 갖고 있었나요?
+---
 
-3. 제안 논문이 기존 연구와 **어떤 차별점**을 가지는지 명확히 설명되었나요?
+### 1. 핵심 인용 연구 (Key Cited Works)
+포함할 내용:
+- 인용된 주요 연구명 또는 접근법
+- 어떤 기술/방법론 중심인지
 
-4. 이 문단이 **기술적 계보**를 어떻게 정리하고 있나요?
+### 2. 기존 연구 성과 요약 (Summary of Prior Results)
+포함할 내용:
+- 기존 연구가 달성한 주요 성과
+- 성능, 특징, 기여 요소
+
+### 3. 기존 연구 한계 (Limitations of Prior Work)
+포함할 내용:
+- 제시된 명시적 한계
+- 적용 범위 제약, 데이터 의존성 등
+
+### 4. 본 논문과의 차별점 (Distinction from Prior Work)
+포함할 내용:
+- 기존 연구와 비교했을 때 본 논문이 제공하는 새로운 가치
+- 차별화 요소 명확히 기술
 
 ---
 
@@ -25,39 +44,22 @@
 ```json
 {
   "Related Work": {
-    "핵심 인용 연구 (Key Cited Works)": "...",
-    "기존 연구 성과 요약 (Summary of Prior Results)": "...",
-    "기존 연구 한계 (Limitations of Prior Work)": "...",
-    "본 논문과의 차별점 (Distinction from Prior Work)": "..."
+    "핵심 인용 연구 (Key Cited Works)": "... (연구명/접근법 명시, 원문 인용 포함)",
+    "기존 연구 성과 요약 (Summary of Prior Results)": "... (구체적 성과 요약)",
+    "기존 연구 한계 (Limitations of Prior Work)": "... (한계 및 제약 명시)",
+    "본 논문과의 차별점 (Distinction from Prior Work)": "... (차별성 명확히)"
   }
 }
+
 
 [주의사항]
 
-각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
 
-단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
 
-각 항목은 최대 2문장 이내로 요약해 주세요.
 
-학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
 
-[예시 입력 문단]
+{INPUT}
 
-"""
-Several approaches have attempted to improve summarization with reinforcement learning.
-Notably, Paulus et al. (2018) combined policy gradient with ROUGE reward to fine-tune sequence-to-sequence models.
-Chen and Bansal (2018) introduced actor-critic methods with intermediate rewards based on sentence quality.
-However, these approaches often suffer from instability and require extensive hyperparameter tuning.
-Unlike prior work, our method does not rely on external rewards and instead optimizes a contrastive signal derived from document-level coherence.
-"""
-
-[예시 출력 JSON]
-{
-  "Related Work": {
-    "핵심 인용 연구 (Key Cited Works)": "Paulus et al.(2018), Chen and Bansal(2018) 등 강화학습 기반 요약 방법",
-    "기존 연구 성과 요약 (Summary of Prior Results)": "정책 경사, actor-critic 기반 보상으로 요약 성능 개선 시도",
-    "기존 연구 한계 (Limitations of Prior Work)": "불안정성, 많은 하이퍼파라미터 튜닝 필요",
-    "본 논문과의 차별점 (Distinction from Prior Work)": "외부 보상 없이 문서 수준 일관성에 기반한 contrastive signal 최적화"
-  }
-}

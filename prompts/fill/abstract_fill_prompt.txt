@@ -1,69 +1,74 @@
 다음은 논문의 Abstract 문단입니다.  
 해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
 
-[목표]
+[목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+
+**핵심 목표**: Abstract에서 이 논문이 무엇을 해결하고, 어떻게 해결했으며, 왜 중요한지 **구조화된 세부 데이터**로 뽑아내는 것.  
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 문단이 다루는 **핵심 문제**는 무엇인가요?  
-   - 이 문제는 어떤 배경 혹은 기존 기술의 한계와 연결되어 있나요?
-
-2. 그 한계를 극복하기 위해 제안된 **구체적인 해결 방법**은 무엇인가요?  
-   - 기술 구조, 방법론, 아키텍처 등이 어떻게 언급되었나요?
-
-3. 제안한 방식이 실제로 **효과가 있었는지**, 어떤 지표나 실험으로 보여주었나요?
-
-4. 위의 요소들을 통해 도출된 논문의 **핵심 기여**는 무엇인가요?  
-   - 기존 기술과 비교해 어떤 점에서 중요한 발전인가요?
+**답변 시 지침**:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 수치(성능 지표), 모델명, 기법명 반드시 기록
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: transformer, domain adaptation))
 
 ---
+
+### 1. **핵심 문제 (Problem Statement)**  
+포함할 내용:
+- 어떤 구체적 과제가 해결 대상인지
+- 문제의 중요성 (왜 중요한가? 산업/기술/사회적 맥락)
+- 문제 발생 배경 (기존 방식이 느리다, 정확도가 낮다 등)
+- 반드시 원문 인용 1개 이상
+
+
+### 2. **연구 공백 / 기존 한계 (Research Gap / Limitations)**  
+포함할 내용:
+- 기존 접근 방식의 한계 최소 2개
+- 예: 데이터 요구량, 성능 부족, 일반화 문제
+- 인용 문장 포함
+
+
+### 3. **제안 방식 (Proposed Solution / Approach)**  
+포함할 내용:
+- 제안된 방법의 이름, 핵심 아이디어
+- 주요 구성 요소 (모델, 알고리즘, 모듈)
+- 어떤 방식으로 문제를 해결하는가
+- 가능하면 단계별 Bullet
+
+
+### 4. **핵심 결과 (Key Results)**  
+포함할 내용:
+- 어떤 지표로 성능 측정했는가 (Accuracy, BLEU, F1 등)
+- 수치 그대로 기록
+- 비교 대상 대비 향상폭
+
+### 5. **기여 요약 (Summary of Contribution)**  
+포함할 내용:
+- 기존 연구와 차별성
+- 기술적/이론적/실험적 가치
+- "첫째, 둘째" 형식으로 2~3문장
+
+
 
 [출력 형식: JSON]
 
 ```json
 {
   "Abstract": {
-    "문제 진술 (Problem Statement)": "...",
-    "연구 공백 / 한계 (Research Gap / Limitations)": "...",
-    "제안 방식 (Proposed Solution / Approach)": "...",
-    "핵심 결과 (Key Results)": "...",
-    "기여 요약 (Summary of Contribution)": "..."
-  }
-}
-
-[주의사항]
-- 각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
-- 단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
-- 각 항목은 최대 2문장 이내로 요약해 주세요.
-- 학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
-
-[예시 입력 문단]
-
-"""
-Despite the remarkable success of Transformer-based models across various NLP tasks,
-they struggle to capture structural dependencies in graph-structured data.
-In tasks like semantic parsing or knowledge graph reasoning,
-the flat attention mechanism lacks inductive bias toward node relationships,
-leading to poor generalization.
-We propose a structure-aware Transformer architecture
-that explicitly incorporates node connectivity via message passing layers,
-enabling more effective learning from graph-structured inputs.
-Experiments on three semantic parsing benchmarks show consistent improvements over standard Transformers.
-"""
-
-[예시 출력 JSON]
-{
-  "Abstract": {
-    "문제 진술 (Problem Statement)": "Transformer 모델이 그래프 기반 구조의 의존성을 잘 학습하지 못함",
-    "연구 공백 / 한계 (Research Gap / Limitations)": "기존 Transformer는 flat한 attention 구조로 인해 노드 간 관계 학습에 한계가 있음",
-    "제안 방식 (Proposed Solution / Approach)": "노드 연결 정보를 message passing 레이어로 통합한 구조 인식형 Transformer 아키텍처 제안",
-    "핵심 결과 (Key Results)": "세 가지 semantic parsing 벤치마크에서 기존 Transformer 대비 일관된 성능 향상을 보임",
-    "기여 요약 (Summary of Contribution)": "Transformer의 구조적 inductive bias 부족 문제를 해결하며 그래프 기반 입력에 대한 학습 효과를 높임"
+    "문제 진술 (Problem Statement)": "... (인용 + 요약 + 세부 요소)",
+    "연구 공백 / 한계 (Research Gap / Limitations)": "... (구체적, 인용 포함)",
+    "제안 방식 (Proposed Solution / Approach)": "... (모델명, 핵심 아이디어, 단계적 설명)",
+    "핵심 결과 (Key Results)": "... (지표, 수치, 비교 대상)",
+    "기여 요약 (Summary of Contribution)": "... (차별성 명확히, 2~3문장)"
   }
 }
 
 
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
+
+{INPUT}

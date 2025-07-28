@@ -3,22 +3,40 @@
 
 [목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-단, 다른 문단에서 유추되거나 보완될 내용은 제외하고, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+핵심 목표: Discussion에서 이 논문의 핵심 교훈, 일반화 가능성, 한계, 후속 연구 방향을 구조화된 세부 데이터로 뽑아내는 것.
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 논문을 통해 얻은 **핵심 교훈 또는 시사점**은 무엇인가요?  
-   - 해당 교훈은 연구자나 실무자에게 어떤 가치를 주나요?
+답변 시 지침:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 조건, 맥락, 제약 사항이 있다면 그대로 기록
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: scalability, limitations))
 
-2. 이 교훈은 **다른 맥락이나 분야에도 일반화**될 수 있나요?  
-   - 아니면 특정 조건에 국한되나요?
+---
 
-3. 논문에서 명시한 **한계나 제약 사항**은 무엇이며,  
-   그로 인해 해석이나 적용에 어떤 주의가 필요한가요?
+### 1. 교훈 요약 (Lesson Summary)
+포함할 내용:
+- 이 논문을 통해 얻은 핵심 교훈
+- 실무적/이론적 가치
+- 반드시 원문 인용 1개 이상
 
-4. 이러한 교훈과 한계를 통해 제시된 **후속 연구 방향**이 있다면 어떤 내용인가요?
+### 2. 일반화 가능성 (Generalizability)
+포함할 내용:
+- 다른 맥락이나 분야에서 적용 가능한가?
+- 특정 조건에 국한되는가?
+
+### 3. 한계 / 제약 사항 (Limitations)
+포함할 내용:
+- 데이터, 환경, 방법론 관련 한계
+- 결과 해석 시 주의점
+
+### 4. 후속 연구 방향 (Future Directions)
+포함할 내용:
+- 명시된 후속 연구 제안
+- 기술적/이론적 발전 가능성
 
 ---
 
@@ -27,37 +45,23 @@
 ```json
 {
   "Discussion": {
-    "교훈 요약 (Lesson Summary)": "...",
-    "일반화 가능성 (Generalizability)": "...",
-    "한계 / 제약 사항 (Limitations)": "...",
-    "후속 연구 방향 (Future Directions)": "..."
+    "교훈 요약 (Lesson Summary)": "... (인용 + 요약 + 실무/이론적 가치)",
+    "일반화 가능성 (Generalizability)": "... (적용 가능성 여부, 조건 포함)",
+    "한계 / 제약 사항 (Limitations)": "... (명확한 한계, 인용 포함)",
+    "후속 연구 방향 (Future Directions)": "... (구체적 제안)"
   }
 }
 
+
 [주의사항]
 
-각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
 
-단 한 문장이라도 명확하지 않다면 **"없음"**이라고 기입하세요.
+학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
 
-각 항목은 최대 2문장 이내로 요약해 주세요.
 
-학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
 
-[예시 입력 문단]
 
-"""
-Our system highlights the trade-off between real-time personalization and model stability, suggesting adaptive prompt regulation.
-While promising, its performance may vary in noisy environments with sparse feedback.
-This study encourages exploration into prompt calibration techniques and long-term user adaptation strategies.
-"""
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
 
-[예시 출력 JSON]
-{
-"Discussion": {
-"교훈 요약 (Lesson Summary)": "실시간 개인화와 모델 안정성 간의 균형이 중요하며, 적응형 프롬프트 조정이 효과적임을 시사",
-"일반화 가능성 (Generalizability)": "피드백이 충분한 환경에서는 일반화 가능하나, 잡음 많은 환경에서는 성능 저하 우려",
-"한계 / 제약 사항 (Limitations)": "피드백 데이터가 부족한 상황에서 성능 불안정성이 존재",
-"후속 연구 방향 (Future Directions)": "장기 사용자 적응 전략 및 프롬프트 보정 기법에 대한 연구가 필요함"
-}
-}
+{INPUT}

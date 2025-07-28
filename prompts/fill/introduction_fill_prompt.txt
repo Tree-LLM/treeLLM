@@ -3,22 +3,42 @@
 
 [목표]  
 이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**단, 다른 문단에서 유추되거나 보완될 내용은 제외하고**, 이 문단 자체에 명시된 내용만을 반영하십시오.
+**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
 
----
+핵심 목표: Introduction에서 연구 배경, 기존 접근, 문제 정의, 핵심 기여를 구조화된 세부 데이터로 뽑아내는 것.
 
 [Chain-of-Thought 분석 절차]
 
-1. 이 문단이 도입부로서 제시하는 **연구의 배경**은 무엇인가요?  
-   - 어떤 맥락에서 이 문제가 등장했으며, 왜 중요한가요?
+답변 시 지침:
+- 원문 문장을 최소 1개 이상 인용
+- Bullet Point로 세부 항목 정리
+- 기술명, 한계, 기여 사항을 구체적으로 기록
+- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: motivation, gap, contribution))
 
-2. **기존 연구들의 흐름**은 어떻게 설명되었나요?  
-   - 대표적인 접근법이나 성과, 그리고 그 한계는 무엇인가요?
+---
 
-3. 이 논문은 어떤 **기술적·사회적 문제를 해결**하려고 하나요?  
-   - 문제의 구체성과 시급성, 실제 활용 문맥 등
+### 1. 연구 배경 및 중요성 (Background & Significance)
+포함할 내용:
+- 이 문제는 어떤 맥락에서 등장했는가?
+- 왜 중요한가? (산업적, 사회적, 기술적 의미)
+- 반드시 원문 인용 1개 이상
 
-4. 해당 문제를 해결하기 위해 어떤 **핵심 아이디어 또는 기여**를 제안하나요?
+### 2. 기존 접근 방식 요약 (Prior Approaches)
+포함할 내용:
+- 기존 연구의 대표적 접근법
+- 어떤 성과를 냈는가
+- 한계점은 무엇인가
+
+### 3. 핵심 문제 정의 (Problem Definition)
+포함할 내용:
+- 논문이 집중하는 핵심 문제
+- 구체적 과제 및 해결 필요성
+
+### 4. 핵심 기여 요약 (Core Contributions)
+포함할 내용:
+- 제안된 기법 또는 아이디어
+- 논문이 주장하는 차별성
+- 2~3 문장 요약
 
 ---
 
@@ -26,42 +46,23 @@
 
 ```json
 {
-  Introduction": {
-    "연구 배경 및 중요성 (Background & Significance)": "...",
-    "기존 접근 방식 요약 (Prior Approaches)": "...",
-    "핵심 문제 정의 (Problem Definition)": "...",
-    "핵심 기여 요약 (Core Contributions)": "..."
+  "Introduction": {
+    "연구 배경 및 중요성 (Background & Significance)": "... (인용 + 요약)",
+    "기존 접근 방식 요약 (Prior Approaches)": "... (접근법과 한계 명확히)",
+    "핵심 문제 정의 (Problem Definition)": "... (구체적 문제 기술)",
+    "핵심 기여 요약 (Core Contributions)": "... (기여 사항 요약)"
   }
 }
 
 [주의사항]
 
-각 항목은 이 문단에 직접적으로 표현된 문장 또는 명확히 유추 가능한 내용만 작성하세요.
+각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
 
-단 한 문장이라도 명확하지 않다면 "없음"이라고 기입하세요.
+학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
 
-각 항목은 최대 2문장 이내로 요약해 주세요.
 
-학술적 표현을 사용하되, 가능한 한 간결하고 명확하게 작성하세요.
 
-[예시 입력 문단]
 
-"""
-Large-scale pretrained models have shown strong performance across a range of NLP tasks.
-However, their ability to explain decisions remains limited, which has raised concerns in high-stakes domains like healthcare and law.
-Prior work has explored saliency-based methods and probing classifiers,
-but they often lack consistency and generalizability.
-In this paper, we aim to provide a more faithful explanation framework
-by leveraging internal representations and attention patterns during inference.
-Our contributions include a novel explanation objective and a benchmark for human-aligned evaluation.
-"""
+!!!### 입력 논문 : 추출해야될 대상 ###!!!
 
-[예시 출력 JSON]
-{
-  "Introduction": {
-    "연구 배경 및 중요성 (Background & Significance)": "대규모 사전학습 모델은 높은 성능을 보이지만, 설명 가능성이 부족하여 의료·법률 등 고위험 분야에서 문제가 되고 있음",
-    "기존 접근 방식 요약 (Prior Approaches)": "Saliency 기반 방법 및 probing classifier 등 다양한 설명 방식이 제안되었으나, 일관성과 일반화 측면에서 한계가 있음",
-    "핵심 문제 정의 (Problem Definition)": "모델의 내부 표현과 attention을 이용한 보다 신뢰성 있는 설명 방식을 제시하고자 함",
-    "핵심 기여 요약 (Core Contributions)": "설명 목적을 반영한 새로운 objective 제안 및 인간 정렬 평가 기준을 위한 벤치마크 제시"
-  }
-}
+{INPUT}
