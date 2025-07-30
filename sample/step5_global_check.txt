@@ -1,16 +1,14 @@
 ```json
 {
   "issues": [
-    "Introduction에서 Abstract와 중복된 내용이 일부 존재 ('충돌 가능 영역' 정의 및 주요 기여사항)",
-    "Background와 Related Work 섹션이 매우 유사하여 중복이 발생하고 있음",
-    "Method 섹션의 '모델 구조' 설명이 길고 복잡하여 논리적 흐름이 다소 혼란스러움",
-    "Discussion에서 새로운 보조 장비 관련 아이디어가 도입되는데, Method 섹션에서는 언급되지 않음"
+    "The 'Background' and 'Related Work' sections contain nearly identical content, leading to redundancy and a lack of differentiation between previous research context and specific related studies.",
+    "The 'Method' section introduces detailed calculations and model structures without a clear transition from the broader context provided in the 'Introduction' and 'Background', causing a sudden and disjointed shift in focus.",
+    "The 'Discussion' section reiterates points made in the 'Introduction' and 'Conclusion', such as the combination of temporal and spatial information, which can lead to unnecessary repetition."
   ],
   "suggestions": [
-    "Introduction에서 Abstract와 중복되는 '충돌 가능 영역' 정의와 주요 기여사항 관련 문장을 간략화",
-    "Background와 Related Work에서 각각의 목적을 명확히 하고, 중복 내용을 줄임. 예를 들어, Background는 기술의 발전을, Related Work는 다른 연구와의 차별성을 강조",
-    "Method 섹션의 '모델 구조' 부분을 서브 섹션으로 나누어 설명하고, 각 단계의 시작 부분에 요약 문장을 추가하여 흐름을 명확히 함",
-    "Discussion에서 언급된 보조 장비 관련 내용을 Method 섹션에서 잠시 다뤄 향후 연구 방향 등의 섹션에 포함하도록 제안"
+    "Merge the 'Background' and 'Related Work' sections into a single section that clearly outlines the state of previous research while highlighting this study's unique contributions.",
+    "Add a transitional paragraph at the beginning of the 'Method' section to smoothly connect the context and objectives outlined in the 'Introduction' with the detailed explanation of the model and calculations.",
+    "Remove repetitive statements in the 'Discussion' that are already adequately covered in the 'Introduction' and 'Conclusion', focusing instead on the interpretation of results and potential implications."
   ]
 }
 ```

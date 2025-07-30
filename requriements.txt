@@ -1,0 +1,7 @@
+Flask
+Flask-Cors
+openai
+requests
+python-dotenv
+pdfminer.six
+PyMuPDF
