@@ -1,0 +1,11 @@
+[Orchestrator Started] 2025-07-30 15:37:06.545993
+
+[2025-07-30 15:37:06.565551] [Step 1] Split 완료 → sample/step1_result.json, sample/sample_split.txt
+[2025-07-30 15:38:04.340830] [Step 2] Build 완료 → sample/step1_result.txt
+[2025-07-30 15:38:04.341833] [Step 3] TreeBuilder 완료 → sample/step2_result.json
+[2025-07-30 15:38:45.640577] [Step 4] Audit 완료 → sample/step3_result.txt
+[2025-07-30 15:39:51.889564] [Step 5] EditPass1 완료 → sample/step4_result.json
+[2025-07-30 15:40:02.403283] [Step 6] GlobalCheck 완료 → sample/step5_global_check.txt
+[2025-07-30 15:40:23.638950] [Step 7] EditPass2 완료 → sample/step6_result.txt
+[2025-07-30 15:40:23.639093] [Step 8] Finalize 완료 → sample/final_result.txt
+[2025-07-30 15:40:23.639122] [Orchestrator] ✅ 전체 파이프라인 완료!

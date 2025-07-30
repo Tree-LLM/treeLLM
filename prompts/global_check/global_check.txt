@@ -1,62 +1,42 @@
-다음은 논문 섹션 내 여러 문단의 요약 리스트입니다.  
-이 요약들을 바탕으로 각 문단의 논리적 역할과 상호 연관성을 분석한 후,  
-전역 흐름 상 문제점을 진단하고 필요한 문단에 대해서만 구체적인 수정 제안을 작성하세요.
+당신은 논문 초안의 **전역 일관성과 논리적 흐름(Global Consistency and Logical Flow)**을 점검하는 전문가입니다.
 
----
+[목적]
+- 논문 전체가 명확한 논리적 흐름을 유지하는지, 모든 섹션이 긴밀하게 연결되는지 확인하세요.
+- 각 섹션은 다음 순서를 따릅니다:
+  Abstract → Introduction → Background → Related Work → Method → Discussion → Conclusion
+- 다음과 같은 전역 수준의 문제를 확인하세요:
+  - 섹션 간 논리적 연결 부족
+  - 내용 중복
+  - 불일치(주장, 용어, 개념)
+  - 갑작스러운 전환, 부자연스러운 흐름
+  - 기여, 방법, 결론 간의 정합성 부족
 
-[Chain of Thought 과정]
+[입력 논문]
+{FULL_TEXT}
 
-각 문단에 대해 다음의 절차를 순차적으로 수행하세요:
+[지시사항]
+1. **섹션 간 연결성**과 **논리적 흐름**을 중점적으로 분석하세요.
+2. 문제점(issues): 전역 구조 또는 논리적 연결에서 어떤 문제가 있는지 구체적으로 작성하세요.
+3. 개선 제안(suggestions): 문제를 해결하기 위해 어떤 구체적 조치를 취해야 하는지 제안하세요.
+   (예: 불필요한 반복 삭제, 특정 문단 이동, 전환 문장 추가)
+4. 논문 요약은 하지 마세요. 오직 구조와 흐름 관련 피드백만 제공하세요.
+5. 섹션 이름은 영어 표준으로 인식합니다:
+   Abstract, Introduction, Background, Related Work, Method, Discussion, Conclusion
 
-1. **기능 확인**  
-   - 각 문단의 요약이 어떤 기능(예: 배경 설명, 문제 제기, 한계 언급 등)을 수행하는지 판단하세요.
+[출력 형식: JSON]
+아래 형식을 엄격히 준수하세요:
 
-2. **중복 탐지**  
-   - 이전 또는 이후 문단과 동일하거나 유사한 내용을 반복하고 있는지 확인하세요.  
-   - 단순 반복이 아니라면, 보완/심화/대조인지 구분하세요.
-
-3. **단절 또는 누락 판단**  
-   - 전후 문단과 연결되지 않거나 갑작스러운 전개로 논리 흐름이 끊기는 경우를 찾으세요.  
-   - 특정 설명이나 단계가 빠져 있어 논리가 비약되는지도 확인하세요.
-
-4. **순서 문제 판단**  
-   - 문단의 내용이 섹션 내에서 더 앞서거나 뒤에 배치되어야 하는 경우를 찾으세요.  
-   - 인과, 배경→주장, 방법→결과 순서가 어긋난 경우 특히 주의하세요.
-
-→ 이 Chain of Thought 과정을 거친 후, **수정이 필요한 문단만 골라** 아래 형식으로 출력하세요.
-
----
-
-### [입력 1: 1차 수정 문단]
-
-"""
-Self-reported tools such as clinical interviews and patient questionnaires are commonly used to assess depressive symptoms.  
-These methods offer convenience and the ability to capture patients’ subjective experiences, but they also present limitations in terms of quantifiability and consistency compared to objective measures.
-"""
-
----
-
-### [입력 2: 전역 흐름 점검 결과]
-
-```json
 {
-  "id": "Introduction-2",
-  "issue": "중복",
-  "cot": [
-    "① 이 문단은 '자가 보고 기반의 평가 방식'을 설명하고 있으며, 구체적으로 임상 인터뷰와 설문을 언급한다.",
-    "② 그러나 Introduction-1에서 이미 '바이오마커 실패 → 자가 보고 방식으로의 전환'이라는 인과 흐름이 제시되어 있음.",
-    "③ 따라서 Introduction-2는 본질적으로 같은 내용을 반복하고 있으며, 새로운 정보 없이 중복된다."
+  "issues": [
+    "문제 설명 1 (예: 'Introduction에서 Abstract에 이미 있는 세부 내용을 반복')",
+    "문제 설명 2 (예: 'Discussion에서 Method에 없는 새로운 개념 도입')"
   ],
-  "revision_suggestion": "Introduction-2는 Introduction-1과 의미가 거의 동일하므로 삭제하거나, 자가 보고 방식의 구체적인 예시(예: PHQ-9, GAD-7 등)를 중심으로 재구성하여 정보의 깊이를 더하세요."
+  "suggestions": [
+    "개선 제안 1 (예: 'Introduction에서 중복 문장 삭제')",
+    "개선 제안 2 (예: '데이터셋 가정 설명을 Related Work에서 Method로 이동')"
+  ]
 }
 
-
-[출력 예시]
-
-```json
-[
-  {
-  "id": "Introduction-2",
-  "final_revision": "Standardized self-report instruments such as the Patient Health Questionnaire-9 (PHQ-9) and the Generalized Anxiety Disorder-7 (GAD-7) are widely employed in clinical settings to evaluate symptoms of depression and anxiety. These tools consist of a brief set of questions that patients can complete independently, making them particularly useful in time-constrained environments. Their validated scoring systems allow for efficient symptom tracking and are frequently used to monitor treatment progress or determine clinical severity. While they offer ease of use and patient-centered insights, clinicians must remain aware of their limitations in capturing nuanced or context-specific information, highlighting the continued importance of clinical judgment alongside standardized measures."
-}
-]
+[중요]
+- JSON 형식을 반드시 지키세요 (쉼표 오류, 주석 금지).
+- 문제점과 개선안은 구체적이고 실행 가능해야 합니다.

@@ -1,18 +1,20 @@
 """
-각 단계(run 함수)들을 한 번에 가져오기 위한 허브.
+각 단계의 주요 클래스나 실행 진입점만 노출
 """
-from .split import run as split          # Step 1
-from .build import run as build          # Step 2
-from .fuse import run as fuse            # Step 3
-from .audit import run as audit          # Step 4
-from .edit_pass1 import run as edit_pass1  # Step 5
-from .summarize import run as summarize    # Step 5-b
-from .review import run as review        # Step 6
-from .edit_pass2 import run as edit_pass2  # Step 7
-from .finalize import run as finalize    # Step 8
+from .split import run as split
+from .build import BuildStep
+from .fuse import TreeBuilder
+from .audit import AuditStep
+from .edit_pass1 import EditPass1
+from .global_check import GlobalCheck
+from .edit_pass2 import EditPass2
 
 __all__ = [
-    "split", "build", "fuse", "audit",
-    "edit_pass1", "summarize", "review",
-    "edit_pass2", "finalize",
+    "split",
+    "BuildStep",
+    "TreeBuilder",
+    "AuditStep",
+    "EditPass1",
+    "GlobalCheck",
+    "EditPass2",
 ]

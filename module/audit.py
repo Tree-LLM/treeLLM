@@ -14,7 +14,7 @@ import json
 import glob
 from typing import Dict
 from openai import OpenAI
-from split import run as split_run  # 개선된 split.py (dict 반환)
+from .split import run as split_run  # 개선된 split.py (dict 반환)
 
 
 class AuditStep:
@@ -53,6 +53,8 @@ class AuditStep:
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            top_p=0.3
         )
         return response.choices[0].message.content.strip()
 
