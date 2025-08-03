@@ -1,67 +1,112 @@
-다음은 논문의 Method 문단입니다.  
-해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
+You are analyzing an academic paper. Process the following Method/Methodology section to extract structured information for building a knowledge tree.
 
-[목표]  
-이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
+[OBJECTIVE]
+Extract meaningful information from this section to populate the paper's knowledge tree.
+**IMPORTANT: Only use information explicitly stated in this section. Do not infer from other sections or add general knowledge.**
 
-핵심 목표: Method에서 제안된 접근 개요, 모델 구조, 설계 선택, 기존 방식과 차별점을 구조화된 세부 데이터로 뽑아내는 것.
+[LANGUAGE HANDLING]
+- The input text may be in Korean, English, or mixed languages
+- Analyze the content regardless of language
+- Provide your analysis in the same language as the majority of the input text
+- If the input is primarily in English, respond in English
+- If the input is primarily in Korean, respond in Korean
 
-[Chain-of-Thought 분석 절차]
+[ANALYSIS PROCEDURE]
 
-답변 시 지침:
-- 원문 문장을 최소 1개 이상 인용
-- Bullet Point로 세부 항목 정리
-- 모델명, 주요 모듈명, 단계별 구조 명확히 기록
-- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: architecture, module, optimization))
-
----
-
-### 1. 제안 방법 개요 (Approach Overview)
-포함할 내용:
-- 제안된 방법의 핵심 아이디어
-- 논문이 제시하는 전체적인 접근 방식
-- 1~2문장 요약 + 원문 인용
-
-### 2. 모델 구조 / 구성 요소 (Architecture / Components)
-포함할 내용:
-- 아키텍처 주요 블록 (예: Encoder, Decoder, Attention)
-- 각 모듈의 역할
-- 단계별 처리 과정
-
-### 3. 핵심 설계 선택 (Design Choices)
-포함할 내용:
-- 채택된 알고리즘, 하이퍼파라미터, 데이터 처리 전략
-- 선택 이유 또는 설계 근거
-
-### 4. 기존 방식과 차별점 (Differences from Baselines)
-포함할 내용:
-- 기존 접근과 비교한 구조적/기능적 차별성
-- 성능 향상을 기대하는 이유
+**Guidelines**:
+- Extract all technical details, algorithms, and procedures
+- Note mathematical formulations and equations
+- Identify system architecture and components
+- Include implementation details
+- Quote important definitions and formulas
 
 ---
 
-[출력 형식: JSON]
+### 1. **Overall Approach/Framework**
+Include:
+- Name of the proposed method/system
+- High-level architecture or workflow
+- Main components and their relationships
+- Key innovations or novel aspects
+
+### 2. **Technical Components**
+For each major component:
+- Component name and purpose
+- How it works (algorithm/procedure)
+- Input and output specifications
+- Mathematical formulations (if any)
+- Parameters and hyperparameters
+
+### 3. **Implementation Details**
+Include:
+- Programming languages/frameworks used
+- Hardware requirements
+- Data preprocessing steps
+- Training procedures (for ML methods)
+- Optimization techniques
+
+### 4. **Algorithms and Procedures**
+Include:
+- Step-by-step algorithms
+- Pseudo-code (if provided)
+- Complexity analysis
+- Key equations or formulas
+- Decision rules or heuristics
+
+### 5. **Evaluation Setup**
+Include:
+- Datasets used
+- Evaluation metrics
+- Baseline methods for comparison
+- Experimental settings
+- Parameter configurations
+
+[OUTPUT FORMAT: JSON]
 
 ```json
 {
   "Method": {
-    "제안 방법 개요 (Approach Overview)": "... (핵심 아이디어 + 원문 인용)",
-    "모델 구조 / 구성 요소 (Architecture / Components)": "... (주요 블록, 역할 명확히)",
-    "핵심 설계 선택 (Design Choices)": "... (구체적 이유 포함)",
-    "기존 방식과 차별점 (Differences from Baselines)": "... (명시된 차이와 장점)"
+    "Overall Approach": {
+      "method_name": "...",
+      "architecture": "description of overall architecture",
+      "main_components": ["component1", "component2"],
+      "key_innovations": ["innovation1", "innovation2"]
+    },
+    "Technical Components": [
+      {
+        "component_name": "...",
+        "purpose": "...",
+        "algorithm": "description or steps",
+        "inputs": ["input1", "input2"],
+        "outputs": ["output1", "output2"],
+        "formulations": ["equation1", "equation2"],
+        "parameters": {"param1": "value/range", "param2": "value/range"}
+      }
+    ],
+    "Implementation Details": {
+      "languages_frameworks": ["language1", "framework1"],
+      "hardware": "requirements",
+      "preprocessing": ["step1", "step2"],
+      "training_procedure": "description",
+      "optimization": "techniques used"
+    },
+    "Algorithms and Procedures": {
+      "main_algorithm": "description or pseudo-code",
+      "complexity": "time/space complexity",
+      "key_equations": ["equation1", "equation2"],
+      "decision_rules": ["rule1", "rule2"]
+    },
+    "Evaluation Setup": {
+      "datasets": ["dataset1", "dataset2"],
+      "metrics": ["metric1", "metric2"],
+      "baselines": ["baseline1", "baseline2"],
+      "settings": "experimental configuration",
+      "parameters": "parameter values used"
+    }
   }
 }
+```
 
-
-[주의사항]
-
-각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
-
-학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
-
-
-
-!!!### 입력 논문 : 추출해야될 대상 ###!!!
+### INPUT PAPER TO ANALYZE:
 
 {INPUT}

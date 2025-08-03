@@ -1,42 +1,141 @@
-당신은 논문 초안의 **전역 일관성과 논리적 흐름(Global Consistency and Logical Flow)**을 점검하는 전문가입니다.
+You are performing a global quality check on an analyzed academic paper. Your task is to ensure consistency, completeness, and coherence across all sections.
 
-[목적]
-- 논문 전체가 명확한 논리적 흐름을 유지하는지, 모든 섹션이 긴밀하게 연결되는지 확인하세요.
-- 각 섹션은 다음 순서를 따릅니다:
-  Abstract → Introduction → Background → Related Work → Method → Discussion → Conclusion
-- 다음과 같은 전역 수준의 문제를 확인하세요:
-  - 섹션 간 논리적 연결 부족
-  - 내용 중복
-  - 불일치(주장, 용어, 개념)
-  - 갑작스러운 전환, 부자연스러운 흐름
-  - 기여, 방법, 결론 간의 정합성 부족
+[OBJECTIVE]
+Perform a comprehensive review to identify issues and suggest improvements for the paper analysis.
 
-[입력 논문]
-{FULL_TEXT}
+[LANGUAGE HANDLING]
+- The paper may be in Korean, English, or mixed languages
+- Perform the quality check regardless of language
+- Provide your feedback in the same language as the majority of the input
+- Note any language-related inconsistencies
 
-[지시사항]
-1. **섹션 간 연결성**과 **논리적 흐름**을 중점적으로 분석하세요.
-2. 문제점(issues): 전역 구조 또는 논리적 연결에서 어떤 문제가 있는지 구체적으로 작성하세요.
-3. 개선 제안(suggestions): 문제를 해결하기 위해 어떤 구체적 조치를 취해야 하는지 제안하세요.
-   (예: 불필요한 반복 삭제, 특정 문단 이동, 전환 문장 추가)
-4. 논문 요약은 하지 마세요. 오직 구조와 흐름 관련 피드백만 제공하세요.
-5. 섹션 이름은 영어 표준으로 인식합니다:
-   Abstract, Introduction, Background, Related Work, Method, Discussion, Conclusion
+[GLOBAL CHECK CRITERIA]
 
-[출력 형식: JSON]
-아래 형식을 엄격히 준수하세요:
+### 1. **Consistency Verification**
+Check for:
+- Technical terminology consistency across sections
+- Numerical values alignment (performance metrics, parameters)
+- Method names and acronyms usage
+- Citation style and references
+- Language consistency (if mixed, is it appropriate?)
 
+### 2. **Completeness Assessment**
+Verify presence of:
+- All major components expected in a research paper
+- Sufficient detail in methodology
+- Complete results reporting
+- Adequate literature review
+- Clear problem statement and contributions
+
+### 3. **Logical Flow and Coherence**
+Examine:
+- Does the narrative flow logically from problem to solution?
+- Are research questions properly answered?
+- Do results support the claims made?
+- Is there a clear thread connecting all sections?
+- Are transitions between sections smooth?
+
+### 4. **Technical Soundness**
+Evaluate:
+- Are the methods appropriate for the problem?
+- Is the evaluation comprehensive?
+- Are baselines fairly compared?
+- Are limitations honestly discussed?
+- Is the scope reasonable?
+
+### 5. **Impact and Significance**
+Assess:
+- Is the contribution clearly articulated?
+- Is the impact substantiated by results?
+- Are claims supported by evidence?
+- Is the work positioned properly in the field?
+
+[OUTPUT FORMAT]
+
+```json
 {
-  "issues": [
-    "문제 설명 1 (예: 'Introduction에서 Abstract에 이미 있는 세부 내용을 반복')",
-    "문제 설명 2 (예: 'Discussion에서 Method에 없는 새로운 개념 도입')"
-  ],
-  "suggestions": [
-    "개선 제안 1 (예: 'Introduction에서 중복 문장 삭제')",
-    "개선 제안 2 (예: '데이터셋 가정 설명을 Related Work에서 Method로 이동')"
-  ]
+  "global_quality_check": {
+    "overall_assessment": {
+      "score": "X/10",
+      "summary": "Brief overall evaluation",
+      "primary_language": "en/ko/mixed",
+      "language_quality": "Assessment of language use and consistency"
+    },
+    
+    "issues": [
+      "Specific issue 1 (e.g., 'Introduction repeats content from Abstract')",
+      "Specific issue 2 (e.g., 'Method section missing algorithm details')",
+      "Specific issue 3 (e.g., 'Results don't address RQ2')"
+    ],
+    
+    "suggestions": [
+      "Actionable suggestion 1 (e.g., 'Remove duplicate content in Introduction')",
+      "Actionable suggestion 2 (e.g., 'Add algorithm pseudocode in Method')",
+      "Actionable suggestion 3 (e.g., 'Add analysis for RQ2 in Results')"
+    ],
+    
+    "detailed_feedback": {
+      "consistency": {
+        "terminology_issues": ["term inconsistency 1", "term inconsistency 2"],
+        "numerical_mismatches": ["mismatch 1", "mismatch 2"],
+        "score": "X/5"
+      },
+      
+      "completeness": {
+        "missing_elements": ["element 1", "element 2"],
+        "insufficient_detail": ["area 1", "area 2"],
+        "score": "X/5"
+      },
+      
+      "coherence": {
+        "flow_problems": ["problem 1", "problem 2"],
+        "unsupported_claims": ["claim 1", "claim 2"],
+        "score": "X/5"
+      },
+      
+      "technical_soundness": {
+        "methodology_issues": ["issue 1", "issue 2"],
+        "evaluation_gaps": ["gap 1", "gap 2"],
+        "score": "X/5"
+      }
+    },
+    
+    "strengths": [
+      "Strong point 1",
+      "Strong point 2",
+      "Strong point 3"
+    ]
+  }
 }
+```
 
-[중요]
-- JSON 형식을 반드시 지키세요 (쉼표 오류, 주석 금지).
-- 문제점과 개선안은 구체적이고 실행 가능해야 합니다.
+[CHECKING PROCESS]
+
+1. **First Pass - Structure**
+   - Verify all expected sections are present
+   - Check section order: Abstract → Introduction → Related Work → Method → Experiments → Discussion → Conclusion
+   - Ensure balanced section lengths
+
+2. **Second Pass - Content Flow**
+   - Track how concepts are introduced and developed
+   - Verify each section builds on previous ones
+   - Check for sudden topic shifts or gaps
+
+3. **Third Pass - Consistency**
+   - List all technical terms and verify consistent usage
+   - Check all numerical values match across sections
+   - Verify acronyms are defined before use
+
+4. **Fourth Pass - Completeness**
+   - Ensure all research questions are addressed
+   - Verify all claims have supporting evidence
+   - Check that limitations are discussed
+
+5. **Final Pass - Impact**
+   - Evaluate overall contribution clarity
+   - Assess practical and theoretical significance
+   - Consider positioning within the field
+
+### INPUT: Paper to check:
+
+{FULL_TEXT}

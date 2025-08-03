@@ -1,43 +1,110 @@
-요약을 작성하기 전에 다음의 Chain of Thought 절차를 반드시 따르세요.  
-각 단계를 순차적으로 수행한 뒤, 마지막에 이를 바탕으로 요약을 작성합니다.
+You are creating a comprehensive summary of an academic paper for researchers and practitioners.
 
-### [Chain of Thought 지시사항]
+[OBJECTIVE]
+Generate a structured summary that captures the essence of the paper, making it easy for readers to quickly understand the key contributions and decide if they should read the full paper.
 
-1. **주제 파악**:  
-   문단 전체가 어떤 주제 또는 문제를 다루고 있는지 1문장으로 요약하세요.
+[LANGUAGE HANDLING]
+- Adapt to the language of the input paper
+- If the paper is in English, provide summary in English
+- If the paper is in Korean, provide summary in Korean
+- For mixed-language papers, use the predominant language
 
-2. **핵심 개념 식별**:  
-   문단에서 반복되거나 중심이 되는 주요 개념이나 키워드(전문 용어, 주요 대상 등)를 나열하세요.
+[SUMMARY COMPONENTS]
 
-3. **핵심 문장/근거 파악**:  
-   문단에서 가장 중요한 메시지를 담고 있는 문장을 1~2개 인용하거나 요약하세요.  
-   이 문장들은 주장의 핵심이거나 전환점이 되는 문장입니다.
+### 1. **One-Line Summary**
+A single sentence that captures the core contribution of the paper.
 
-4. **문단의 기능 분석**:  
-   이 문단이 논문 전체 구조에서 어떤 역할을 수행하는지 설명하세요.  
-   예: 문제 제기 / 배경 설명 / 방법 개요 / 한계 인식 / 결과 강조 등
+### 2. **Key Contributions** (3-5 bullet points)
+- Main technical/theoretical contribution
+- Novel methodology or approach
+- Empirical findings
+- Practical applications
+- Released resources (datasets, code, models)
 
-→ 위의 사고 과정을 거친 뒤,  
-**문단의 핵심 내용을 1~2 문장으로 요약하세요.**
+### 3. **Problem and Motivation**
+- What problem does this paper address?
+- Why is it important?
+- What gap in existing research does it fill?
 
-✦ 단, 단순 정보 요약이 아닌, 문단의 **논리적 흐름**, **인과 관계**, **전개 구조**를 충실히 반영해야 합니다. 
-✦ 핵심 개념이 어떤 맥락에서 등장했는지까지 자연스럽게 설명해 주세요.
+### 4. **Methodology Overview**
+- High-level description of the approach
+- Key technical innovations
+- Main components or steps
+
+### 5. **Results and Findings**
+- Primary results (with key numbers)
+- Performance improvements over baselines
+- Interesting discoveries or insights
+
+### 6. **Limitations and Future Work**
+- Acknowledged limitations
+- Suggested future directions
+- Open questions raised
+
+### 7. **Why You Should Read This Paper**
+- Who would benefit from reading this?
+- What will readers learn?
+- When is this approach applicable?
+
+[OUTPUT FORMAT]
+
+```markdown
+# Paper Summary: [Title if available]
+
+## 📌 One-Line Summary
+[Single sentence capturing the essence]
+
+## 🎯 Key Contributions
+• [Contribution 1]
+• [Contribution 2]
+• [Contribution 3]
+• [Additional contributions...]
+
+## 🔍 Problem and Motivation
+[2-3 sentences explaining the problem and why it matters]
+
+## 🔧 Methodology
+[3-4 sentences describing the approach at a high level]
+
+## 📊 Results
+• [Key result 1 with numbers]
+• [Key result 2 with numbers]
+• [Key result 3 with numbers]
+
+## ⚠️ Limitations and Future Work
+• Limitations: [Brief description]
+• Future directions: [Brief description]
+
+## 📖 Who Should Read This?
+• Researchers working on: [relevant areas]
+• Practitioners interested in: [applications]
+• You'll learn: [key takeaways]
+
+## 🏷️ Tags
+[#keyword1] [#keyword2] [#keyword3] [#keyword4] [#keyword5]
+
 ---
+*Summary generated from: [Paper title or identifier]*
+*Primary language: [English/Korean/Mixed]*
+```
 
-[입력 예시]
+[SUMMARY GUIDELINES]
 
-문단 ID: Introduction-1
+1. **Be Concise**: Each section should be brief but informative
+2. **Be Specific**: Include concrete details and numbers
+3. **Be Objective**: Present facts without subjective interpretation
+4. **Be Helpful**: Focus on what readers need to know
+5. **Be Accurate**: Don't overstate or understate contributions
 
-문단 원문:
-"""
-With this rising burden of depression, there has been an emphasis on implementing measurement-based care to monitor disease progression, inform treatment management and improve outcomes, but there are barriers to widespread adoption (Hong et al., 2021). Multiple attempts by researchers to identify physiologic, genetic or digital biomarkers that indicate treatment response or depression subtypes have struggled to establish broad clinical acceptance (Fraguas et al., 2007; Zeier et al., 2018; Place et al., 2020). In the absence of objective biomarkers for tracking disease status, the primary option available for depression screening, diagnosis and monitoring is through the elicitation of patient symptoms by clinical interview or patient reported measures. Multiple clinician and patient reported scales exist for assessing depression symptoms and severity.
-"""
+[QUALITY CRITERIA]
 
----
+A good summary should:
+- Allow readers to understand the paper in 2-3 minutes
+- Highlight what makes this work unique
+- Provide enough detail to assess relevance
+- Be self-contained (no need to read the full paper)
+- Use clear, accessible language
 
-[출력 예시]
+### INPUT: Paper to summarize:
 
-{
-  "id": "Introduction-1",
-  "summary": "객관적 바이오마커를 활용한 우울증 평가 시도가 임상적 정착에 실패하면서, 현재는 환자의 증상 보고를 기반으로 한 측정 기반 치료 방식이 대안으로 활용되고 있다."
-}
+{PAPER_CONTENT}

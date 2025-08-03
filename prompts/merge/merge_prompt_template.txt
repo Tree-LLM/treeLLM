@@ -1,22 +1,118 @@
-다음은 논문 {{SECTION_NAME}} 섹션의 각 문단에서 추출된 부분 트리들입니다.  
-각 문단은 전체 트리의 일부 노드만 채우고 있습니다.  
-이 트리들을 종합하여, 가장 정확하고 완성도 높은 통합 트리를 생성해 주세요.
+You are tasked with merging multiple analysis results from different sections of an academic paper into a unified tree structure.
 
-※ 지침:
-- 같은 노드가 여러 문단에 나타나면, **가장 명확하고 구체적인 표현**을 선택하세요.
-- 서로 보완적인 정보가 있으면 적절히 **합쳐서 요약**해도 됩니다. (요약 과정에서 정보 삭제되지 않게 주의)
-- 해당 정보가 어떤 문단에도 없다면 `"없음"`으로 표기해 주세요.
-- 출력은 반드시 JSON 형식으로 해 주세요.
-- 항목 이름은 그대로 유지해 주세요 (한국어 (영문) 형식).
+[OBJECTIVE]
+Create a comprehensive knowledge tree by intelligently merging information from all paper sections while maintaining consistency and avoiding redundancy.
 
-[입력: 문단별 Partial Tree 리스트]
-{{PARTIAL_TREE_LIST}}
+[LANGUAGE HANDLING]
+- The input may contain analyses in Korean, English, or mixed languages
+- Maintain the original language of the content
+- If merging content in different languages, keep each language's content intact
+- Structure labels can be in English for consistency
 
-[출력: 통합 트리 JSON]
+[MERGING GUIDELINES]
+
+1. **Information Integration**
+   - Combine related information from different sections
+   - Resolve any conflicts by prioritizing more specific/detailed information
+   - Maintain traceability (note which section information came from)
+   - Avoid duplication while preserving unique insights
+
+2. **Consistency Checks**
+   - Ensure technical terms are used consistently
+   - Verify that findings in different sections align
+   - Flag any contradictions for review
+   - Maintain consistent formatting and structure
+
+3. **Completeness**
+   - Fill gaps where one section provides information missing in others
+   - Create cross-references between related concepts
+   - Ensure all major contributions are captured
+   - Preserve section-specific insights
+
+[OUTPUT STRUCTURE]
+
+Create a unified tree with the following main branches:
+
+```json
 {
-  "{{SECTION_KEY}}": {
-    "{{NODE_1}}": "",
-    "{{NODE_2}}": "",
-    ...
+  "paper_analysis": {
+    "metadata": {
+      "title": "extracted or inferred",
+      "primary_language": "en/ko/mixed",
+      "field": "research area",
+      "paper_type": "empirical/theoretical/survey/system"
+    },
+    
+    "problem_and_motivation": {
+      "core_problem": "merged from abstract & introduction",
+      "research_questions": ["RQ1", "RQ2"],
+      "motivation": "why this matters",
+      "gap_in_literature": "what's missing"
+    },
+    
+    "methodology": {
+      "approach_name": "...",
+      "key_components": ["component1", "component2"],
+      "technical_details": {
+        "algorithms": ["..."],
+        "architecture": "...",
+        "innovations": ["..."]
+      },
+      "implementation": {
+        "tools": ["..."],
+        "datasets": ["..."],
+        "parameters": {...}
+      }
+    },
+    
+    "results_and_evaluation": {
+      "main_findings": ["finding1", "finding2"],
+      "performance_metrics": {
+        "metric1": "value",
+        "metric2": "value"
+      },
+      "comparison_with_baselines": {
+        "baseline1": "improvement%",
+        "baseline2": "improvement%"
+      },
+      "ablation_results": ["..."]
+    },
+    
+    "contributions_and_impact": {
+      "technical_contributions": ["..."],
+      "theoretical_contributions": ["..."],
+      "practical_applications": ["..."],
+      "limitations": ["..."],
+      "future_work": ["..."]
+    },
+    
+    "cross_section_insights": {
+      "consistency_notes": ["alignment1", "alignment2"],
+      "contradictions_found": ["if any"],
+      "emergent_themes": ["theme1", "theme2"],
+      "holistic_assessment": "overall evaluation"
+    }
   }
 }
+```
+
+[MERGE STRATEGY]
+
+1. Start with the Abstract's high-level summary
+2. Enrich with Introduction's detailed motivation
+3. Add technical depth from Method section
+4. Incorporate empirical evidence from Experiments
+5. Include interpretations from Discussion
+6. Conclude with forward-looking elements from Conclusion
+7. Cross-validate information across sections
+
+[QUALITY CHECKS]
+- No orphaned information (everything connected)
+- No redundant branches (merge similar content)
+- Balanced detail level across branches
+- Clear parent-child relationships
+- Traceable to source sections
+
+### INPUT: Section-wise analyses to merge:
+
+{ANALYSES_TO_MERGE}
