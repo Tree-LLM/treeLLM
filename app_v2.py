@@ -12,6 +12,10 @@ import json
 from datetime import datetime
 import logging
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 # V2 모듈 임포트
 from OrchestratorV2 import OrchestratorV2
