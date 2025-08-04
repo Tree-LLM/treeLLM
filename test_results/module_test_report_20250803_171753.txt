@@ -1,0 +1,35 @@
+TreeLLM Module Test Report
+============================================================
+
+Configuration:
+  Model: gpt-4o
+  Temperature: 0.3
+  Max Tokens: 4096
+
+Module Test Results:
+----------------------------------------
+
+SPLIT: ✓ PASS
+  Execution Time: 0.00s
+  Quality Score: 0.70
+
+FUSE: ✓ PASS
+  Execution Time: 0.00s
+  Quality Score: 0.50
+
+AUDIT: ✗ FAIL
+  Error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+
+EDIT_PASS1: ✗ FAIL
+  Error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+
+GLOBAL_CHECK: ✗ FAIL
+  Error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+
+EDIT_PASS2: ✗ FAIL
+  Error: Expecting value: line 1 column 1 (char 0)
+
+Summary:
+  Success Rate: 33.3%
+  Total Time: 0.00s
+  Avg Quality: 0.20

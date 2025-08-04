@@ -1,0 +1,1 @@
+# This directory is no longer needed. V2 is now the main version.
