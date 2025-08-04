@@ -39,12 +39,12 @@ class OrchestratorV2:
         self.config = config or load_config(preset)
         self.config.validate()
         
-        # 로깅 설정
-        self._setup_logging()
-        
-        # 결과 디렉토리 설정
+        # 결과 디렉토리 설정 (로깅보다 먼저)
         self.base_dir = Path(self.config.result_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 로깅 설정
+        self._setup_logging()
         
         # 성능 메트릭 초기화
         self.metrics = {
@@ -88,12 +88,12 @@ class OrchestratorV2:
         
         self.log(f"Saved intermediate result: {filename}", "DEBUG")
     
-    def _measure_time(self, func):
+    def _measure_time(func):
         """데코레이터: 단계별 실행 시간 측정"""
-        def wrapper(*args, **kwargs):
+        def wrapper(self, *args, **kwargs):
             step_name = func.__name__.replace("_run_", "")
             start = time.time()
-            result = func(*args, **kwargs)
+            result = func(self, *args, **kwargs)
             duration = time.time() - start
             self.metrics["step_durations"][step_name] = duration
             self.log(f"{step_name} completed in {duration:.2f}s")
