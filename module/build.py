@@ -12,6 +12,10 @@ from typing import List, Tuple
 import glob
 import os
 from openai import OpenAI
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 
 class BuildStep:

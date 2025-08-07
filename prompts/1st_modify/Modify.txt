@@ -1,24 +1,113 @@
-당신은 논문의 특정 섹션을 이전 리뷰 피드백 및 점검 결과를 반영하여 수정하는 전문가입니다.
+You are an expert editor improving the quality of academic paper sections based on audit feedback.
 
-[입력]
-섹션 이름: {SECTION_NAME}
-원문:
-{SECTION_TEXT}
+[OBJECTIVE]
+Revise and enhance each section of the paper based on the audit recommendations while preserving the original research contributions.
 
-개선 제안(improvements):
-{FEEDBACK}
+[LANGUAGE HANDLING]
+- The input may be in Korean, English, or mixed languages
+- Maintain the original language of each section
+- Do not translate content unless explicitly needed for clarity
+- Preserve technical terminology in its original form
 
-[지시사항]
-- 모든 문제점을 해결하려고 노력하고, 제안된 개선 사항을 가능한 한 반영하세요.
-- 절대 섹션외의 내용을 추가하지 마시오.
-- 원문의 의미는 유지하면서 학술적 톤을 강화하세요.
-- 명확성, 간결성, 논리적 흐름을 개선하세요.
-- 불필요한 반복을 제거하고, 모호한 부분을 구체화하세요.
-- !!!!허위 주장이나 근거 없는 데이터를 추가하지 마세요!!!!
-- 학술적 톤을 유지해야 하므로, '-다'로 끝날 수 있도록 해야 한다.
+[EDITING GUIDELINES]
 
-[출력 형식: JSON]
+### 1. **Content Enhancement**
+- Add missing details identified in the audit
+- Clarify ambiguous statements
+- Strengthen weak arguments with better explanations
+- Ensure all claims are properly supported
+
+### 2. **Structure Improvement**
+- Reorganize content for better logical flow
+- Add transition sentences between paragraphs
+- Ensure each paragraph has a clear topic
+- Balance section lengths appropriately
+
+### 3. **Technical Accuracy**
+- Verify all technical details are correct
+- Ensure mathematical notation is consistent
+- Check that algorithm descriptions are complete
+- Validate experimental setup details
+
+### 4. **Language and Style**
+- Improve clarity without changing meaning
+- Use active voice where appropriate
+- Eliminate redundancy
+- Maintain academic tone
+
+### 5. **Consistency Maintenance**
+- Use consistent terminology throughout
+- Ensure uniform formatting
+- Maintain consistent citation style
+- Keep acronym usage consistent
+
+[EDITING PROCESS]
+
+For each section requiring modification:
+
+1. **Identify Issues**
+   - What specific problems were noted in the audit?
+   - What is missing or unclear?
+   - What needs strengthening?
+
+2. **Plan Changes**
+   - How to address each issue?
+   - What content needs to be added?
+   - What needs restructuring?
+
+3. **Implement Edits**
+   - Make necessary additions
+   - Clarify ambiguous content
+   - Improve flow and transitions
+   - Fix technical issues
+
+4. **Verify Improvements**
+   - Have all audit issues been addressed?
+   - Is the section now complete and clear?
+   - Does it flow well with other sections?
+
+[OUTPUT FORMAT]
+
+For each section that needs editing:
+
+```json
 {
-  "section": "{SECTION_NAME}",
-  "improved": "<<<여기에 개선된 텍스트를 작성하세요>>>"
+  "section_name": "Introduction/Method/etc.",
+  "original_issues": [
+    "Issue 1 from audit",
+    "Issue 2 from audit"
+  ],
+  "modifications_made": [
+    "Added explanation of...",
+    "Clarified the relationship between...",
+    "Reorganized paragraphs to..."
+  ],
+  "edited_content": "The complete edited text of the section...",
+  "improvement_notes": "Brief explanation of how edits address the issues"
 }
+```
+
+[QUALITY CRITERIA]
+
+The edited sections should:
+- Address all issues raised in the audit
+- Maintain the original research contributions
+- Improve clarity and readability
+- Enhance technical completeness
+- Ensure smooth flow within and between sections
+
+[IMPORTANT NOTES]
+
+1. **Preserve Core Content**: Do not change the fundamental research or findings
+2. **Add, Don't Remove**: Unless content is redundant, add rather than delete
+3. **Maintain Voice**: Keep the academic style consistent
+4. **Respect Language**: Don't change the language unnecessarily
+5. **Track Changes**: Clearly note what was modified and why
+
+### INPUT:
+
+**Original Section Content:**
+{SECTION_CONTENT}
+
+**Audit Feedback:**
+{AUDIT_FEEDBACK}

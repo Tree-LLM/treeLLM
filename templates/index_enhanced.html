@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreeLLM - Enhanced Academic Paper Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .version-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f7fafc;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #e6ecff;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .preset-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .preset-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .preset-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .preset-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        }
+        
+        .preset-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .preset-description {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .preset-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #a0aec0;
+        }
+        
+        .quality-indicator {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .quality-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e0;
+        }
+        
+        .quality-dot.active {
+            background: #667eea;
+        }
+        
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .progress-section.active {
+            display: block;
+        }
+        
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        .stage-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stage-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: #f7fafc;
+            font-size: 0.875rem;
+            color: #718096;
+            transition: all 0.3s ease;
+        }
+        
+        .stage-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .stage-item.completed {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .results-section.active {
+            display: block;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .metric-card {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+        
+        .download-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .download-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-info {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .file-info.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #feb2b2;
+            color: #742a2a;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            🌳 TreeLLM
+            <span class="version-badge">v3.0 Enhanced</span>
+        </h1>
+        <p style="color: #718096; margin-top: 0.5rem;">AI-Powered Academic Paper Analysis Pipeline</p>
+    </header>
+    
+    <div class="container">
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <h2 class="section-title">
+                📄 Upload Paper
+            </h2>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <p style="font-size: 1.125rem; color: #4a5568; margin-bottom: 0.5rem;">
+                    Drop your paper here or click to browse
+                </p>
+                <p style="font-size: 0.875rem; color: #a0aec0;">
+                    Supported formats: TXT, PDF, DOCX, MD (Max: 10MB)
+                </p>
+            </div>
+            <input type="file" id="fileInput" accept=".txt,.pdf,.docx,.md">
+            <div class="file-info" id="fileInfo">
+                <strong>File:</strong> <span id="fileName"></span><br>
+                <strong>Size:</strong> <span id="fileSize"></span><br>
+                <strong>Words:</strong> <span id="wordCount"></span>
+            </div>
+        </section>
+        
+        <!-- Preset Selection -->
+        <section class="preset-section">
+            <h2 class="section-title">
+                ⚙️ Select Configuration Preset
+            </h2>
+            <div class="preset-grid" id="presetGrid">
+                <!-- Presets will be loaded dynamically -->
+            </div>
+        </section>
+        
+        <!-- Progress Section -->
+        <section class="progress-section" id="progressSection">
+            <h2 class="section-title">
+                ⏳ Analysis Progress
+            </h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText" style="text-align: center; color: #718096;">Initializing...</p>
+            <div class="stage-list" id="stageList">
+                <div class="stage-item" data-stage="1">Split</div>
+                <div class="stage-item" data-stage="2">Build</div>
+                <div class="stage-item" data-stage="3">Fuse</div>
+                <div class="stage-item" data-stage="4">Audit</div>
+                <div class="stage-item" data-stage="5">Edit Pass 1</div>
+                <div class="stage-item" data-stage="6">Global Check</div>
+                <div class="stage-item" data-stage="7">Edit Pass 2</div>
+            </div>
+            <div id="spinner" class="spinner" style="margin-top: 2rem; display: none;"></div>
+        </section>
+        
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection">
+            <h2 class="section-title">
+                📊 Analysis Results
+            </h2>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="qualityScore">-</div>
+                    <div class="metric-label">Quality Score</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="processingTime">-</div>
+                    <div class="metric-label">Processing Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="tokenCount">-</div>
+                    <div class="metric-label">Tokens Used</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="estimatedCost">-</div>
+                    <div class="metric-label">Estimated Cost</div>
+                </div>
+            </div>
+            <button class="download-btn" id="downloadBtn">📥 Download Results (JSON)</button>
+        </section>
+        
+        <!-- Analyze Button -->
+        <button class="analyze-btn" id="analyzeBtn" disabled>
+            🚀 Start Analysis
+        </button>
+        
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+    
+    <script>
+        let uploadedFile = null;
+        let selectedPreset = 'balanced';
+        let sessionId = null;
+        let progressInterval = null;
+        
+        // Load presets
+        async function loadPresets() {
+            try {
+                const response = await fetch('/api/presets');
+                const presets = await response.json();
+                
+                const presetGrid = document.getElementById('presetGrid');
+                presetGrid.innerHTML = '';
+                
+                Object.entries(presets).forEach(([key, preset]) => {
+                    const card = document.createElement('div');
+                    card.className = 'preset-card' + (key === 'balanced' ? ' selected' : '');
+                    card.dataset.preset = key;
+                    
+                    const qualityLevel = {
+                        'fast': 1,
+                        'balanced': 2,
+                        'precision': 3,
+                        'research': 4
+                    }[key] || 2;
+                    
+                    card.innerHTML = `
+                        <div class="preset-name">${preset.name}</div>
+                        <div class="preset-description">${preset.description}</div>
+                        <div class="preset-meta">
+                            <span>${preset.estimated_time}</span>
+                            <div class="quality-indicator">
+                                ${[1,2,3,4].map(i => `<div class="quality-dot ${i <= qualityLevel ? 'active' : ''}"></div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => selectPreset(key));
+                    presetGrid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Failed to load presets:', error);
+            }
+        }
+        
+        function selectPreset(preset) {
+            selectedPreset = preset;
+            document.querySelectorAll('.preset-card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.preset === preset);
+            });
+            checkAnalyzeButton();
+        }
+        
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        async function handleFile(file) {
+            uploadedFile = file;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    sessionId = result.session_id;
+                    uploadedFile.serverName = result.filename;
+                    
+                    document.getElementById('fileName').textContent = result.original_name;
+                    document.getElementById('fileSize').textContent = formatFileSize(result.file_info.size);
+                    document.getElementById('wordCount').textContent = result.file_info.word_count.toLocaleString();
+                    
+                    fileInfo.classList.add('active');
+                    checkAnalyzeButton();
+                } else {
+                    showError(result.error);
+                }
+            } catch (error) {
+                showError('Failed to upload file: ' + error.message);
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        function checkAnalyzeButton() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.disabled = !uploadedFile || !selectedPreset;
+        }
+        
+        // Analysis
+        document.getElementById('analyzeBtn').addEventListener('click', startAnalysis);
+        
+        async function startAnalysis() {
+            if (!uploadedFile || !sessionId) return;
+            
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.disabled = true;
+            
+            // Show progress section
+            document.getElementById('progressSection').classList.add('active');
+            document.getElementById('resultsSection').classList.remove('active');
+            document.getElementById('spinner').style.display = 'block';
+            
+            // Reset progress
+            updateProgress(0, 'Starting analysis...');
+            
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        filename: uploadedFile.serverName,
+                        preset: selectedPreset,
+                        enable_cache: true,
+                        enable_metrics: true,
+                        save_intermediate: true
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Start polling for progress
+                    startProgressPolling();
+                } else {
+                    showError(result.error);
+                    analyzeBtn.disabled = false;
+                }
+            } catch (error) {
+                showError('Failed to start analysis: ' + error.message);
+                analyzeBtn.disabled = false;
+            }
+        }
+        
+        function startProgressPolling() {
+            progressInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/progress/${sessionId}`);
+                    const progress = await response.json();
+                    
+                    updateProgress(progress.percentage, progress.message);
+                    updateStages(progress.stage_number);
+                    
+                    if (progress.status === 'completed') {
+                        clearInterval(progressInterval);
+                        document.getElementById('spinner').style.display = 'none';
+                        await showResults();
+                    } else if (progress.status === 'error') {
+                        clearInterval(progressInterval);
+                        document.getElementById('spinner').style.display = 'none';
+                        showError('Analysis failed');
+                        document.getElementById('analyzeBtn').disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Progress polling error:', error);
+                }
+            }, 1000);
+        }
+        
+        function updateProgress(percentage, message) {
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = message;
+        }
+        
+        function updateStages(currentStage) {
+            document.querySelectorAll('.stage-item').forEach((item, index) => {
+                const stageNum = index + 1;
+                if (stageNum < currentStage) {
+                    item.classList.add('completed');
+                    item.classList.remove('active');
+                } else if (stageNum === currentStage) {
+                    item.classList.add('active');
+                    item.classList.remove('completed');
+                } else {
+                    item.classList.remove('active', 'completed');
+                }
+            });
+        }
+        
+        async function showResults() {
+            try {
+                const response = await fetch(`/api/results/${sessionId}`);
+                const results = await response.json();
+                
+                // Update metrics
+                document.getElementById('qualityScore').textContent = 
+                    (results.quality_metrics?.overall_score || 0).toFixed(2);
+                document.getElementById('processingTime').textContent = 
+                    (results.duration || 0).toFixed(1) + 's';
+                document.getElementById('tokenCount').textContent = 
+                    (results.performance?.total_tokens || 0).toLocaleString();
+                document.getElementById('estimatedCost').textContent = 
+                    '$' + (results.performance?.estimated_cost || 0).toFixed(3);
+                
+                // Show results section
+                document.getElementById('resultsSection').classList.add('active');
+                
+                // Enable download button
+                document.getElementById('downloadBtn').onclick = () => downloadResults();
+                
+            } catch (error) {
+                showError('Failed to load results: ' + error.message);
+            }
+            
+            document.getElementById('analyzeBtn').disabled = false;
+        }
+        
+        async function downloadResults() {
+            window.location.href = `/api/download/${sessionId}`;
+        }
+        
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('active');
+            setTimeout(() => {
+                errorEl.classList.remove('active');
+            }, 5000);
+        }
+        
+        // Initialize
+        loadPresets();
+    </script>
+</body>
+</html>

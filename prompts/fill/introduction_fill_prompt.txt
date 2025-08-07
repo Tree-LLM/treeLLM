@@ -1,68 +1,96 @@
-다음은 논문의 Introduction 문단입니다.  
-해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
+You are analyzing an academic paper. Process the following Introduction section to extract structured information for building a knowledge tree.
 
-[목표]  
-이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
+[OBJECTIVE]
+Extract meaningful information from this section to populate the paper's knowledge tree.
+**IMPORTANT: Only use information explicitly stated in this section. Do not infer from other sections or add general knowledge.**
 
-핵심 목표: Introduction에서 연구 배경, 기존 접근, 문제 정의, 핵심 기여를 구조화된 세부 데이터로 뽑아내는 것.
+[LANGUAGE HANDLING]
+- The input text may be in Korean, English, or mixed languages
+- Analyze the content regardless of language
+- Provide your analysis in the same language as the majority of the input text
+- If the input is primarily in English, respond in English
+- If the input is primarily in Korean, respond in Korean
 
-[Chain-of-Thought 분석 절차]
+[ANALYSIS PROCEDURE]
 
-답변 시 지침:
-- 원문 문장을 최소 1개 이상 인용
-- Bullet Point로 세부 항목 정리
-- 기술명, 한계, 기여 사항을 구체적으로 기록
-- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: motivation, gap, contribution))
-
----
-
-### 1. 연구 배경 및 중요성 (Background & Significance)
-포함할 내용:
-- 이 문제는 어떤 맥락에서 등장했는가?
-- 왜 중요한가? (산업적, 사회적, 기술적 의미)
-- 반드시 원문 인용 1개 이상
-
-### 2. 기존 접근 방식 요약 (Prior Approaches)
-포함할 내용:
-- 기존 연구의 대표적 접근법
-- 어떤 성과를 냈는가
-- 한계점은 무엇인가
-
-### 3. 핵심 문제 정의 (Problem Definition)
-포함할 내용:
-- 논문이 집중하는 핵심 문제
-- 구체적 과제 및 해결 필요성
-
-### 4. 핵심 기여 요약 (Core Contributions)
-포함할 내용:
-- 제안된 기법 또는 아이디어
-- 논문이 주장하는 차별성
-- 2~3 문장 요약
+**Guidelines**:
+- Quote at least 2-3 original sentences as evidence
+- Organize with clear bullet points
+- Capture specific examples, scenarios, and applications mentioned
+- Include all technical terms and definitions
 
 ---
 
-[출력 형식: JSON]
+### 1. **Background and Context**
+Include:
+- Historical development of the field
+- Current state of technology/research
+- Real-world applications and use cases
+- Industry or societal needs driving this research
+- Direct quotes showing the context
+
+### 2. **Problem Definition and Challenges**
+Include:
+- Precise problem statement
+- Why existing solutions fall short
+- Technical challenges (computational, data-related, theoretical)
+- Specific scenarios where the problem occurs
+- Impact of not solving this problem
+
+### 3. **Motivation and Research Questions**
+Include:
+- Why this problem deserves attention now
+- Specific research questions being addressed
+- Potential benefits of solving this problem
+- Target applications or beneficiaries
+
+### 4. **Proposed Approach Overview**
+Include:
+- High-level description of the solution
+- Key innovations or novel aspects
+- How it differs from previous work
+- Expected advantages
+
+### 5. **Paper Organization and Contributions**
+Include:
+- Brief overview of paper structure
+- List of main contributions (usually numbered)
+- What readers can expect to learn
+
+[OUTPUT FORMAT: JSON]
 
 ```json
 {
   "Introduction": {
-    "연구 배경 및 중요성 (Background & Significance)": "... (인용 + 요약)",
-    "기존 접근 방식 요약 (Prior Approaches)": "... (접근법과 한계 명확히)",
-    "핵심 문제 정의 (Problem Definition)": "... (구체적 문제 기술)",
-    "핵심 기여 요약 (Core Contributions)": "... (기여 사항 요약)"
+    "Background and Context": {
+      "description": "...",
+      "key_points": ["point1", "point2"],
+      "quotes": ["quote1", "quote2"]
+    },
+    "Problem Definition and Challenges": {
+      "main_problem": "...",
+      "technical_challenges": ["challenge1", "challenge2"],
+      "impact": "...",
+      "quotes": ["quote1", "quote2"]
+    },
+    "Motivation and Research Questions": {
+      "motivation": "...",
+      "research_questions": ["RQ1", "RQ2"],
+      "expected_benefits": ["benefit1", "benefit2"]
+    },
+    "Proposed Approach Overview": {
+      "approach_name": "...",
+      "key_innovations": ["innovation1", "innovation2"],
+      "advantages": ["advantage1", "advantage2"]
+    },
+    "Paper Organization and Contributions": {
+      "structure": "...",
+      "main_contributions": ["contribution1", "contribution2", "contribution3"]
+    }
   }
 }
+```
 
-[주의사항]
-
-각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
-
-학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
-
-
-
-
-!!!### 입력 논문 : 추출해야될 대상 ###!!!
+### INPUT PAPER TO ANALYZE:
 
 {INPUT}

@@ -1,0 +1,45 @@
+{
+  "preset_comparison": {
+    "fast": {
+      "split_quality": 1.0,
+      "token_efficiency": 0,
+      "tree_quality": 0.85,
+      "final_quality": 0.7666666666666666,
+      "estimated_cost": 2.77032,
+      "cost_efficiency": 0.2652294765431051,
+      "overall": 0.560545895308621
+    },
+    "balanced": {
+      "split_quality": 1.0,
+      "token_efficiency": 0,
+      "tree_quality": 0.85,
+      "final_quality": 0.7666666666666666,
+      "estimated_cost": 2.77032,
+      "cost_efficiency": 0.2652294765431051,
+      "overall": 0.560545895308621
+    },
+    "thorough": {
+      "split_quality": 1.0,
+      "token_efficiency": 0,
+      "tree_quality": 0.85,
+      "final_quality": 0.7666666666666666,
+      "estimated_cost": 2.77032,
+      "cost_efficiency": 0.2652294765431051,
+      "overall": 0.560545895308621
+    },
+    "research": {
+      "split_quality": 1.0,
+      "token_efficiency": 0,
+      "tree_quality": 0.85,
+      "final_quality": 0.7666666666666666,
+      "estimated_cost": 4.49064,
+      "cost_efficiency": 0.18212813078256815,
+      "overall": 0.5439256261565136
+    }
+  },
+  "optimal_parameters": {
+    "temperature": 0.1,
+    "max_tokens": 1024
+  },
+  "timestamp": "2025-08-03 17:16:44"
+}

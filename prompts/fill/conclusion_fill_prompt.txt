@@ -1,58 +1,105 @@
-다음은 논문의 Conclusion 문단입니다.  
-해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
+You are analyzing an academic paper. Process the following Conclusion section to extract structured information for building a knowledge tree.
 
-[목표]  
-이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
+[OBJECTIVE]
+Extract meaningful information from this section to populate the paper's knowledge tree.
+**IMPORTANT: Only use information explicitly stated in this section. Do not infer from other sections or add general knowledge.**
 
-핵심 목표: Conclusion에서 이 논문의 결론, 전제 조건, 시사점, 적용 가능성 및 한계를 구조화된 세부 데이터로 뽑아내는 것.
+[LANGUAGE HANDLING]
+- The input text may be in Korean, English, or mixed languages
+- Analyze the content regardless of language
+- Provide your analysis in the same language as the majority of the input text
+- If the input is primarily in English, respond in English
+- If the input is primarily in Korean, respond in Korean
 
-[Chain-of-Thought 분석 절차]
+[ANALYSIS PROCEDURE]
 
-답변 시 지침:
-- 원문 문장을 최소 1개 이상 인용
-- Bullet Point로 세부 항목 정리
-- 수치, 조건, 맥락이 있다면 그대로 기록
-- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: scalability, robustness))
-
----
-
-### 1. 핵심 결론 / 기여 요약 (Key Conclusion / Contribution Summary)
-포함할 내용:
-- 논문이 주장하는 최종 결론
-- 기술적/이론적/실험적 기여
-- 반드시 원문 인용 1개 이상
-
-### 2. 전제 및 민감도 (Assumptions / Sensitivity)
-포함할 내용:
-- 연구의 주요 가정
-- 전제 조건 변화 시 결과 영향
-
-### 3. 교훈 / 시사점 (Lesson / Implication)
-포함할 내용:
-- 실무적/이론적 교훈
-- 산업적/연구 적용 시 시사점
-
-### 4. 일반화 가능성 및 한계 (Generalizability / Limitation)
-포함할 내용:
-- 적용 범위 (다른 도메인 가능 여부)
-- 명시된 한계점
+**Guidelines**:
+- Extract the final summary of contributions
+- Note the broader impact claimed
+- Identify concluding insights
+- Find future research directions mentioned
+- Include final thoughts and takeaways
 
 ---
 
-[출력 형식: JSON]
+### 1. **Summary of Work**
+Include:
+- Brief recap of the problem addressed
+- Overview of the proposed solution
+- Main methodology employed
+- Key innovations introduced
+
+### 2. **Major Contributions**
+Include:
+- Technical contributions
+- Theoretical advances
+- Practical applications
+- Empirical findings
+- Released resources (code, data, models)
+
+### 3. **Impact and Significance**
+Include:
+- Impact on the research field
+- Potential real-world applications
+- Who benefits from this work
+- How it advances the state-of-the-art
+
+### 4. **Key Takeaways**
+Include:
+- Most important lessons learned
+- Insights for practitioners
+- Guidelines or recommendations
+- What readers should remember
+
+### 5. **Future Directions**
+Include:
+- Remaining challenges
+- Potential extensions
+- New research questions raised
+- Long-term research agenda
+- Call to action for the community
+
+[OUTPUT FORMAT: JSON]
 
 ```json
 {
   "Conclusion": {
-    "핵심 결론 / 기여 요약 (Key Conclusion / Contribution Summary)": "... (인용 + 요약 + 기여 강조)",
-    "전제 및 민감도 (Assumptions / Sensitivity)": "... (가정 및 민감도 상세)",
-    "교훈 / 시사점 (Lesson / Implication)": "... (실무적/이론적 가치 명확히)",
-    "일반화 가능성 및 한계 (Generalizability / Limitation)": "... (적용 범위 및 명시된 한계)"
+    "Summary of Work": {
+      "problem_recap": "...",
+      "solution_overview": "...",
+      "methodology": "...",
+      "key_innovations": ["innovation1", "innovation2"]
+    },
+    "Major Contributions": {
+      "technical": ["contribution1", "contribution2"],
+      "theoretical": ["advance1", "advance2"],
+      "practical": ["application1", "application2"],
+      "empirical": ["finding1", "finding2"],
+      "resources": ["resource1", "resource2"]
+    },
+    "Impact and Significance": {
+      "field_impact": "...",
+      "real_world_applications": ["application1", "application2"],
+      "beneficiaries": ["group1", "group2"],
+      "advancement": "how it advances the field"
+    },
+    "Key Takeaways": {
+      "lessons_learned": ["lesson1", "lesson2"],
+      "practitioner_insights": ["insight1", "insight2"],
+      "recommendations": ["recommendation1", "recommendation2"],
+      "memorable_points": ["point1", "point2"]
+    },
+    "Future Directions": {
+      "remaining_challenges": ["challenge1", "challenge2"],
+      "potential_extensions": ["extension1", "extension2"],
+      "new_questions": ["question1", "question2"],
+      "research_agenda": "...",
+      "call_to_action": "..."
+    }
   }
 }
+```
 
-!!!### 입력 논문 : 추출해야될 대상 ###!!!
+### INPUT PAPER TO ANALYZE:
 
 {INPUT}
-

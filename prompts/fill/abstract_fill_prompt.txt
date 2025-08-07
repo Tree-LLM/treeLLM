@@ -1,74 +1,72 @@
-다음은 논문의 Abstract 문단입니다.  
-해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
+You are analyzing an academic paper. Process the following Abstract section to extract structured information for building a knowledge tree.
 
-[목표]  
-이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
+[OBJECTIVE]
+Extract meaningful information from this section to populate the paper's knowledge tree.
+**IMPORTANT: Only use information explicitly stated in this section. Do not infer from other sections or add general knowledge.**
 
+[LANGUAGE HANDLING]
+- The input text may be in Korean, English, or mixed languages
+- Analyze the content regardless of language
+- Provide your analysis in the same language as the majority of the input text
+- If the input is primarily in English, respond in English
+- If the input is primarily in Korean, respond in Korean
 
-**핵심 목표**: Abstract에서 이 논문이 무엇을 해결하고, 어떻게 해결했으며, 왜 중요한지 **구조화된 세부 데이터**로 뽑아내는 것.  
+[ANALYSIS PROCEDURE]
 
-[Chain-of-Thought 분석 절차]
-
-**답변 시 지침**:
-- 원문 문장을 최소 1개 이상 인용
-- Bullet Point로 세부 항목 정리
-- 수치(성능 지표), 모델명, 기법명 반드시 기록
-- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: transformer, domain adaptation))
+**Guidelines**:
+- Quote at least 1 original sentence as evidence
+- Organize details with bullet points
+- Record all metrics (performance indicators), model names, and technique names
+- Add 2-3 key keywords at the end of each item
 
 ---
 
-### 1. **핵심 문제 (Problem Statement)**  
-포함할 내용:
-- 어떤 구체적 과제가 해결 대상인지
-- 문제의 중요성 (왜 중요한가? 산업/기술/사회적 맥락)
-- 문제 발생 배경 (기존 방식이 느리다, 정확도가 낮다 등)
-- 반드시 원문 인용 1개 이상
+### 1. **Problem Statement**  
+Include:
+- What specific challenge is being addressed
+- Why it's important (industrial/technical/social context)
+- Background of the problem (e.g., existing methods are slow, inaccurate)
+- At least 1 direct quote from the text
 
+### 2. **Research Gap / Limitations**  
+Include:
+- At least 2 limitations of existing approaches
+- Examples: data requirements, performance issues, generalization problems
+- Include quoted sentences
 
-### 2. **연구 공백 / 기존 한계 (Research Gap / Limitations)**  
-포함할 내용:
-- 기존 접근 방식의 한계 최소 2개
-- 예: 데이터 요구량, 성능 부족, 일반화 문제
-- 인용 문장 포함
+### 3. **Proposed Solution / Approach**  
+Include:
+- Name of the proposed method and core idea
+- Main components (models, algorithms, modules)
+- How it solves the problem
+- Step-by-step bullets if possible
 
+### 4. **Key Results**  
+Include:
+- Performance metrics used (Accuracy, BLEU, F1, etc.)
+- Exact numerical values
+- Improvement over baselines
 
-### 3. **제안 방식 (Proposed Solution / Approach)**  
-포함할 내용:
-- 제안된 방법의 이름, 핵심 아이디어
-- 주요 구성 요소 (모델, 알고리즘, 모듈)
-- 어떤 방식으로 문제를 해결하는가
-- 가능하면 단계별 Bullet
+### 5. **Summary of Contributions**  
+Include:
+- How this differs from existing research
+- Technical/theoretical/experimental value
+- 2-3 sentences in "First, Second" format
 
-
-### 4. **핵심 결과 (Key Results)**  
-포함할 내용:
-- 어떤 지표로 성능 측정했는가 (Accuracy, BLEU, F1 등)
-- 수치 그대로 기록
-- 비교 대상 대비 향상폭
-
-### 5. **기여 요약 (Summary of Contribution)**  
-포함할 내용:
-- 기존 연구와 차별성
-- 기술적/이론적/실험적 가치
-- "첫째, 둘째" 형식으로 2~3문장
-
-
-
-[출력 형식: JSON]
+[OUTPUT FORMAT: JSON]
 
 ```json
 {
   "Abstract": {
-    "문제 진술 (Problem Statement)": "... (인용 + 요약 + 세부 요소)",
-    "연구 공백 / 한계 (Research Gap / Limitations)": "... (구체적, 인용 포함)",
-    "제안 방식 (Proposed Solution / Approach)": "... (모델명, 핵심 아이디어, 단계적 설명)",
-    "핵심 결과 (Key Results)": "... (지표, 수치, 비교 대상)",
-    "기여 요약 (Summary of Contribution)": "... (차별성 명확히, 2~3문장)"
+    "Problem Statement": "... (quote + summary + detailed elements)",
+    "Research Gap / Limitations": "... (specific, with quotes)",
+    "Proposed Solution / Approach": "... (model name, core idea, step-by-step explanation)",
+    "Key Results": "... (metrics, numbers, comparisons)",
+    "Summary of Contributions": "... (clear differentiation, 2-3 sentences)"
   }
 }
+```
 
-
-!!!### 입력 논문 : 추출해야될 대상 ###!!!
+### INPUT PAPER TO ANALYZE:
 
 {INPUT}

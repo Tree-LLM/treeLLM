@@ -1,67 +1,107 @@
-다음은 논문의 Discussion 문단입니다.  
-해당 문단으로부터 트리 노드를 구성하기 위해 아래 단계에 따라 분석을 수행하세요.
+You are analyzing an academic paper. Process the following Discussion section to extract structured information for building a knowledge tree.
 
-[목표]  
-이 문단에서 유의미한 정보를 추출하여 논문 트리의 각 항목을 채우는 것입니다.  
-**다른 문단에서 유추하거나 일반적 지식을 보완하지 말고, 반드시 이 문단에 명시된 내용만 반영하세요.**
+[OBJECTIVE]
+Extract meaningful information from this section to populate the paper's knowledge tree.
+**IMPORTANT: Only use information explicitly stated in this section. Do not infer from other sections or add general knowledge.**
 
-핵심 목표: Discussion에서 이 논문의 핵심 교훈, 일반화 가능성, 한계, 후속 연구 방향을 구조화된 세부 데이터로 뽑아내는 것.
+[LANGUAGE HANDLING]
+- The input text may be in Korean, English, or mixed languages
+- Analyze the content regardless of language
+- Provide your analysis in the same language as the majority of the input text
+- If the input is primarily in English, respond in English
+- If the input is primarily in Korean, respond in Korean
 
-[Chain-of-Thought 분석 절차]
+[ANALYSIS PROCEDURE]
 
-답변 시 지침:
-- 원문 문장을 최소 1개 이상 인용
-- Bullet Point로 세부 항목 정리
-- 조건, 맥락, 제약 사항이 있다면 그대로 기록
-- 각 항목 끝에 핵심 키워드 2~3개 추가 (예: (keywords: scalability, limitations))
-
----
-
-### 1. 교훈 요약 (Lesson Summary)
-포함할 내용:
-- 이 논문을 통해 얻은 핵심 교훈
-- 실무적/이론적 가치
-- 반드시 원문 인용 1개 이상
-
-### 2. 일반화 가능성 (Generalizability)
-포함할 내용:
-- 다른 맥락이나 분야에서 적용 가능한가?
-- 특정 조건에 국한되는가?
-
-### 3. 한계 / 제약 사항 (Limitations)
-포함할 내용:
-- 데이터, 환경, 방법론 관련 한계
-- 결과 해석 시 주의점
-
-### 4. 후속 연구 방향 (Future Directions)
-포함할 내용:
-- 명시된 후속 연구 제안
-- 기술적/이론적 발전 가능성
+**Guidelines**:
+- Identify interpretations of results
+- Note implications and significance
+- Extract limitations acknowledged by authors
+- Find future research directions
+- Include theoretical and practical insights
 
 ---
 
-[출력 형식: JSON]
+### 1. **Key Findings Summary**
+Include:
+- Main results reiterated
+- Most important discoveries
+- Unexpected findings
+- How results answer research questions
+
+### 2. **Interpretation and Implications**
+Include:
+- What the results mean
+- Theoretical implications
+- Practical applications
+- Impact on the field
+- Comparison with prior expectations
+
+### 3. **Strengths and Advantages**
+Include:
+- What worked particularly well
+- Advantages over existing methods
+- Robustness of the approach
+- Generalizability of findings
+
+### 4. **Limitations and Challenges**
+Include:
+- Acknowledged limitations
+- Scope boundaries
+- Potential weaknesses
+- Scenarios where method may fail
+- Trade-offs made
+
+### 5. **Future Work and Extensions**
+Include:
+- Suggested improvements
+- Potential applications
+- Open research questions
+- Next steps for research
+- Long-term vision
+
+[OUTPUT FORMAT: JSON]
 
 ```json
 {
   "Discussion": {
-    "교훈 요약 (Lesson Summary)": "... (인용 + 요약 + 실무/이론적 가치)",
-    "일반화 가능성 (Generalizability)": "... (적용 가능성 여부, 조건 포함)",
-    "한계 / 제약 사항 (Limitations)": "... (명확한 한계, 인용 포함)",
-    "후속 연구 방향 (Future Directions)": "... (구체적 제안)"
+    "Key Findings Summary": {
+      "main_results": ["finding1", "finding2"],
+      "important_discoveries": ["discovery1", "discovery2"],
+      "unexpected_findings": ["finding1", "finding2"],
+      "research_questions_answered": "how the work addresses RQs"
+    },
+    "Interpretation and Implications": {
+      "meaning_of_results": "...",
+      "theoretical_implications": ["implication1", "implication2"],
+      "practical_applications": ["application1", "application2"],
+      "field_impact": "...",
+      "comparison_with_expectations": "..."
+    },
+    "Strengths and Advantages": {
+      "what_worked_well": ["aspect1", "aspect2"],
+      "advantages": ["advantage1", "advantage2"],
+      "robustness": "...",
+      "generalizability": "..."
+    },
+    "Limitations and Challenges": {
+      "acknowledged_limitations": ["limitation1", "limitation2"],
+      "scope_boundaries": "...",
+      "potential_weaknesses": ["weakness1", "weakness2"],
+      "failure_scenarios": ["scenario1", "scenario2"],
+      "trade_offs": ["tradeoff1", "tradeoff2"]
+    },
+    "Future Work and Extensions": {
+      "suggested_improvements": ["improvement1", "improvement2"],
+      "potential_applications": ["application1", "application2"],
+      "open_questions": ["question1", "question2"],
+      "next_steps": ["step1", "step2"],
+      "long_term_vision": "..."
+    }
   }
 }
+```
 
-
-[주의사항]
-
-각 항목은 이 문단에 직접적으로 표현된 문장과 위 내용에 대해 자세하게 작성하세요.
-
-학술적 표현을 사용하되, 가능한 한 자세하고 명확하게 작성하세요.
-
-
-
-
-!!!### 입력 논문 : 추출해야될 대상 ###!!!
+### INPUT PAPER TO ANALYZE:
 
 {INPUT}

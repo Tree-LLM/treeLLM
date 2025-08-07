@@ -1,0 +1,54 @@
+{
+  "config": {
+    "model": "gpt-4o",
+    "temperature": 0.3,
+    "max_tokens": 4096
+  },
+  "modules": {
+    "split": {
+      "success": true,
+      "num_sections": 7,
+      "sections": [
+        "Conclusion",
+        "Background",
+        "Abstract",
+        "Introduction",
+        "Method",
+        "Discussion",
+        "Related Work"
+      ],
+      "avg_section_length": 1300.0,
+      "execution_time": 0.00013589859008789062,
+      "quality_score": 0.7
+    },
+    "fuse": {
+      "success": true,
+      "tree_depth": 1,
+      "node_count": 1,
+      "execution_time": 0.00011014938354492188,
+      "quality_score": 0.5
+    },
+    "audit": {
+      "success": false,
+      "error": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/kimminjun/Desktop/TreeLLM/test_modules.py\", line 135, in test_audit_module\n    audit_result = audit.run(sections, tree)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/module/audit.py\", line 92, in run\n    gpt_output = self.call_gpt(prompt)\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/module/audit.py\", line 53, in call_gpt\n    response = self.client.chat.completions.create(\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/.venv/lib/python3.12/site-packages/openai/_utils/_utils.py\", line 287, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/.venv/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py\", line 1131, in create\n    return self._post(\n           ^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/.venv/lib/python3.12/site-packages/openai/_base_client.py\", line 1256, in post\n    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kimminjun/Desktop/TreeLLM/.venv/lib/python3.12/site-packages/openai/_base_client.py\", line 1044, in request\n    raise self._make_status_error_from_response(err.response) from None\nopenai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}\n"
+    },
+    "edit_pass1": {
+      "success": false,
+      "error": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"
+    },
+    "global_check": {
+      "success": false,
+      "error": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}"
+    },
+    "edit_pass2": {
+      "success": false,
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  },
+  "summary": {
+    "success_rate": 0.3333333333333333,
+    "total_execution_time": 0.0002460479736328125,
+    "average_quality_score": 0.19999999999999998
+  }
+}
