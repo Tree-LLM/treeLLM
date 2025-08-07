@@ -10,28 +10,81 @@ from dataclasses import dataclass, field
 
 @dataclass
 class ModelConfig:
-    """언어 모델 관련 설정"""
+    """언어 모델 관련 설정 - Optimized for Academic Paper Analysis"""
     model_name: str = "gpt-4o"
-    temperature: float = 0.3  # 0.0 ~ 1.0, 낮을수록 일관된 출력
-    top_p: float = 0.3  # 0.0 ~ 1.0, nucleus sampling
+    temperature: float = 0.2  # Lowered for better precision in academic analysis
+    top_p: float = 0.3  # Narrow sampling for consistency
     max_tokens: int = 4096  # 최대 출력 토큰 수
-    frequency_penalty: float = 0.0  # -2.0 ~ 2.0, 반복 단어 억제
+    frequency_penalty: float = 0.1  # Slight penalty to reduce repetition
     presence_penalty: float = 0.0  # -2.0 ~ 2.0, 새로운 주제 장려
+    
+    # Stage-specific optimized parameters
+    stage_specific_params: Dict[str, Any] = field(default_factory=lambda: {
+        "split": {
+            "temperature": 0.1,  # Very low for precision
+            "top_p": 0.1,
+            "max_tokens": 2048,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
+        },
+        "build": {
+            "temperature": 0.2,  # Low but allows some variation
+            "top_p": 0.3,
+            "max_tokens": 4096,
+            "frequency_penalty": 0.1,
+            "presence_penalty": 0.0
+        },
+        "fuse": {
+            "temperature": 0.15,  # Very structured output needed
+            "top_p": 0.2,
+            "max_tokens": 6144,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
+        },
+        "audit": {
+            "temperature": 0.05,  # Near-deterministic
+            "top_p": 0.1,
+            "max_tokens": 3072,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
+        },
+        "edit_pass1": {
+            "temperature": 0.25,  # Some creativity for improvements
+            "top_p": 0.4,
+            "max_tokens": 4096,
+            "frequency_penalty": 0.2,
+            "presence_penalty": 0.1
+        },
+        "global_check": {
+            "temperature": 0.1,  # High precision for consistency check
+            "top_p": 0.2,
+            "max_tokens": 3072,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
+        },
+        "edit_pass2": {
+            "temperature": 0.2,  # Controlled refinement
+            "top_p": 0.3,
+            "max_tokens": 4096,
+            "frequency_penalty": 0.15,
+            "presence_penalty": 0.05
+        }
+    })
     
     # 모델별 특화 설정
     model_specific_params: Dict[str, Any] = field(default_factory=lambda: {
         "gpt-4o": {
-            "temperature": 0.3,
+            "temperature": 0.2,  # Optimized for precision
             "top_p": 0.3,
             "max_tokens": 4096
         },
         "gpt-4": {
-            "temperature": 0.4,
-            "top_p": 0.4,
+            "temperature": 0.25,
+            "top_p": 0.35,
             "max_tokens": 8192
         },
         "gpt-3.5-turbo": {
-            "temperature": 0.5,
+            "temperature": 0.4,  # Higher for faster model
             "top_p": 0.5,
             "max_tokens": 4096
         }

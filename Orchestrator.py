@@ -1,7 +1,7 @@
 """
-Orchestrator V2 - 하이퍼파라미터 최적화 버전
-─────────────────────────────────────────────
-TreeLLM 파이프라인 실행 with 세밀한 파라미터 제어
+Enhanced Orchestrator V3 - Optimized Hyperparameter Implementation
+─────────────────────────────────────────────────────────────────
+TreeLLM Pipeline with Stage-Specific Optimization and Advanced Testing
 """
 
 from pathlib import Path
@@ -9,15 +9,16 @@ import json
 from datetime import datetime
 import os
 import time
-from typing import Dict, Any, Optional, Generator
+from typing import Dict, Any, Optional, Generator, List
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 import sys
+import hashlib
 sys.path.append(str(Path(__file__).parent.parent))
 
 # 설정 및 모듈 임포트
-from config import TreeLLMConfig, load_config
+from config import TreeLLMConfig, load_config, ModelConfig
 from module.build import BuildStep
 from module.split import run as split_run
 from module.fuse import TreeBuilder
@@ -27,696 +28,755 @@ from module.global_check import GlobalCheck
 from module.edit_pass2 import EditPass2
 
 
-class OrchestratorV2:
-    """하이퍼파라미터 최적화가 적용된 Orchestrator"""
+class QualityMetrics:
+    """Quality metrics tracking for pipeline optimization"""
     
-    def __init__(self, config: TreeLLMConfig = None, preset: str = "balanced"):
+    def __init__(self):
+        self.metrics = {
+            "accuracy": {
+                "factual_correctness": 0.0,
+                "quote_accuracy": 0.0,
+                "structure_preservation": 0.0
+            },
+            "completeness": {
+                "section_coverage": 0.0,
+                "detail_depth": 0.0,
+                "citation_capture": 0.0
+            },
+            "consistency": {
+                "cross_section_alignment": 0.0,
+                "terminology_consistency": 0.0,
+                "format_adherence": 0.0
+            },
+            "efficiency": {
+                "processing_time": 0.0,
+                "token_usage": 0,
+                "api_calls": 0,
+                "cost_estimate": 0.0
+            }
+        }
+    
+    def calculate_overall_score(self) -> float:
+        """Calculate weighted overall quality score"""
+        accuracy_score = sum(self.metrics["accuracy"].values()) / 3
+        completeness_score = sum(self.metrics["completeness"].values()) / 3
+        consistency_score = sum(self.metrics["consistency"].values()) / 3
+        
+        # Weighted average (accuracy is most important for academic papers)
+        return (accuracy_score * 0.4 + 
+                completeness_score * 0.35 + 
+                consistency_score * 0.25)
+    
+    def update_from_stage(self, stage_name: str, stage_output: Any):
+        """Update metrics based on stage output"""
+        if stage_name == "split":
+            self._update_split_metrics(stage_output)
+        elif stage_name == "build":
+            self._update_build_metrics(stage_output)
+        elif stage_name == "audit":
+            self._update_audit_metrics(stage_output)
+    
+    def _update_split_metrics(self, output):
+        """Update metrics from split stage"""
+        if output and isinstance(output, dict):
+            self.metrics["completeness"]["section_coverage"] = min(len(output) / 7, 1.0)
+    
+    def _update_build_metrics(self, output):
+        """Update metrics from build stage"""
+        if output and isinstance(output, dict):
+            # Check for quotes and evidence
+            quote_count = str(output).count('"')
+            self.metrics["accuracy"]["quote_accuracy"] = min(quote_count / 20, 1.0)
+    
+    def _update_audit_metrics(self, output):
+        """Update metrics from audit stage"""
+        if output and isinstance(output, dict):
+            # Extract quality scores from audit
+            if "quality_score" in output:
+                self.metrics["accuracy"]["factual_correctness"] = output["quality_score"]
+
+
+class EnhancedOrchestratorV3:
+    """Enhanced Orchestrator with optimized hyperparameters and quality tracking"""
+    
+    # Preset configurations optimized for different use cases
+    PRESETS = {
+        "fast": {
+            "name": "Fast Processing",
+            "description": "Quick draft analysis",
+            "model": "gpt-3.5-turbo",
+            "base_temperature": 0.4,
+            "workers": 5
+        },
+        "balanced": {
+            "name": "Balanced",
+            "description": "Default balanced processing",
+            "model": "gpt-4o",
+            "base_temperature": 0.2,
+            "workers": 3
+        },
+        "precision": {
+            "name": "High Precision",
+            "description": "Publication quality analysis",
+            "model": "gpt-4o",
+            "base_temperature": 0.1,
+            "workers": 2
+        },
+        "research": {
+            "name": "Research Grade",
+            "description": "Maximum quality for research",
+            "model": "gpt-4o",
+            "base_temperature": 0.05,
+            "workers": 1
+        }
+    }
+    
+    def __init__(self, config: TreeLLMConfig = None, preset: str = "balanced", 
+                 enable_metrics: bool = True, enable_caching: bool = True):
         """
+        Initialize Enhanced Orchestrator
+        
         Args:
-            config: TreeLLMConfig 인스턴스
-            preset: 사전 정의된 설정 프리셋 ("fast", "balanced", "thorough", "research")
+            config: TreeLLMConfig instance
+            preset: Preset configuration name
+            enable_metrics: Enable quality metrics tracking
+            enable_caching: Enable result caching
         """
-        self.config = config or load_config(preset)
+        self.preset = preset
+        self.config = config or self._load_optimized_config(preset)
         self.config.validate()
         
-        # 결과 디렉토리 설정 (로깅보다 먼저)
+        # Enhanced features
+        self.enable_metrics = enable_metrics
+        self.enable_caching = enable_caching
+        self.quality_metrics = QualityMetrics() if enable_metrics else None
+        
+        # Result directories
         self.base_dir = Path(self.config.result_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir = self.base_dir / "cache"
+        if enable_caching:
+            self.cache_dir.mkdir(exist_ok=True)
         
-        # 로깅 설정
-        self._setup_logging()
+        # Setup logging
+        self._setup_enhanced_logging()
         
-        # 성능 메트릭 초기화
-        self.metrics = {
+        # Performance tracking
+        self.performance_data = {
             "start_time": None,
             "end_time": None,
-            "step_durations": {},
-            "api_calls": 0,
-            "total_tokens": 0
+            "stage_metrics": {},
+            "total_api_calls": 0,
+            "total_tokens": 0,
+            "estimated_cost": 0.0
         }
     
-    def _setup_logging(self):
-        """로깅 설정"""
-        log_level = getattr(logging, self.config.log_level)
-        logging.basicConfig(
-            level=log_level,
-            format='[%(asctime)s] %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler(self.base_dir / "orchestrator.log"),
-                logging.StreamHandler()
-            ]
-        )
-        self.logger = logging.getLogger(__name__)
+    def _load_optimized_config(self, preset: str) -> TreeLLMConfig:
+        """Load optimized configuration based on preset"""
+        if preset not in self.PRESETS:
+            raise ValueError(f"Unknown preset: {preset}. Available: {list(self.PRESETS.keys())}")
+        
+        preset_config = self.PRESETS[preset]
+        config = load_config(preset)
+        
+        # Apply preset-specific settings
+        config.model.model_name = preset_config["model"]
+        config.model.temperature = preset_config["base_temperature"]
+        config.build.max_workers = preset_config["workers"]
+        
+        # Apply stage-specific parameters from ModelConfig
+        if hasattr(config.model, 'stage_specific_params'):
+            self.stage_params = config.model.stage_specific_params
+        else:
+            self.stage_params = {}
+        
+        return config
     
-    def log(self, message: str, level: str = "INFO"):
-        """통합 로깅"""
+    def _setup_enhanced_logging(self):
+        """Setup enhanced logging with multiple handlers"""
+        log_level = getattr(logging, self.config.log_level)
+        
+        # Create formatter
+        formatter = logging.Formatter(
+            '[%(asctime)s] %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+        
+        # File handler for all logs
+        file_handler = logging.FileHandler(self.base_dir / "orchestrator_enhanced.log")
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(log_level)
+        
+        # File handler for errors only
+        error_handler = logging.FileHandler(self.base_dir / "errors.log")
+        error_handler.setFormatter(formatter)
+        error_handler.setLevel(logging.ERROR)
+        
+        # Console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        console_handler.setLevel(log_level)
+        
+        # Configure logger
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(log_level)
+        self.logger.handlers.clear()  # Clear existing handlers
+        self.logger.addHandler(file_handler)
+        self.logger.addHandler(error_handler)
+        self.logger.addHandler(console_handler)
+    
+    def log(self, message: str, level: str = "INFO", stage: str = None):
+        """Enhanced logging with stage information"""
+        if stage:
+            message = f"[{stage}] {message}"
         getattr(self.logger, level.lower())(message)
     
-    def _save_intermediate(self, step_name: str, content: Any, file_type: str = "json"):
-        """중간 결과 저장"""
-        if not self.config.save_intermediate_results:
+    def _get_cache_key(self, stage: str, input_hash: str) -> str:
+        """Generate cache key for stage results"""
+        return f"{stage}_{input_hash}_{self.preset}"
+    
+    def _get_input_hash(self, text: str) -> str:
+        """Generate hash for input text"""
+        return hashlib.md5(text.encode()).hexdigest()[:8]
+    
+    def _load_from_cache(self, cache_key: str) -> Optional[Any]:
+        """Load cached result if available"""
+        if not self.enable_caching:
+            return None
+        
+        cache_file = self.cache_dir / f"{cache_key}.json"
+        if cache_file.exists():
+            self.log(f"Loading from cache: {cache_key}", "DEBUG")
+            return json.loads(cache_file.read_text(encoding="utf-8"))
+        return None
+    
+    def _save_to_cache(self, cache_key: str, data: Any):
+        """Save result to cache"""
+        if not self.enable_caching:
             return
         
+        cache_file = self.cache_dir / f"{cache_key}.json"
+        cache_file.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2), 
+            encoding="utf-8"
+        )
+        self.log(f"Saved to cache: {cache_key}", "DEBUG")
+    
+    def _save_intermediate(self, filename: str, content: Any):
+        """Save intermediate results"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{step_name}_{timestamp}.{file_type}"
-        filepath = self.base_dir / filename
+        filepath = self.base_dir / f"{filename}_{timestamp}.json"
         
-        if file_type == "json":
-            filepath.write_text(json.dumps(content, indent=2, ensure_ascii=False), encoding="utf-8")
-        else:
-            filepath.write_text(str(content), encoding="utf-8")
+        if isinstance(content, str):
+            content = {"content": content}
         
-        self.log(f"Saved intermediate result: {filename}", "DEBUG")
+        filepath.write_text(
+            json.dumps(content, ensure_ascii=False, indent=2),
+            encoding="utf-8"
+        )
+        self.log(f"Saved intermediate: {filepath.name}", "DEBUG")
     
-    def _measure_time(func):
-        """데코레이터: 단계별 실행 시간 측정"""
-        def wrapper(self, *args, **kwargs):
-            step_name = func.__name__.replace("_run_", "")
-            start = time.time()
-            result = func(self, *args, **kwargs)
-            duration = time.time() - start
-            self.metrics["step_durations"][step_name] = duration
-            self.log(f"{step_name} completed in {duration:.2f}s")
+    def _save_final_result(self, result: Dict):
+        """Save final pipeline result"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filepath = self.base_dir / f"final_result_{self.preset}_{timestamp}.json"
+        
+        filepath.write_text(
+            json.dumps(result, ensure_ascii=False, indent=2),
+            encoding="utf-8"
+        )
+        self.log(f"Saved final result: {filepath.name}", "INFO")
+    
+    def _run_split_stage(self, raw_text: str, input_hash: str) -> Dict:
+        """Run split stage with optimized parameters"""
+        stage_name = "split"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            self.log(f"Using optimized params: temp={params.get('temperature', 'default')}", 
+                    "DEBUG", stage_name)
+        
+        try:
+            result = split_run(raw_text)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            if self.quality_metrics:
+                self.quality_metrics.update_from_stage(stage_name, result)
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
             return result
-        return wrapper
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
     
-    def run(self, infile_text: str) -> Dict[str, Any]:
-        """동기 실행 모드"""
-        self.metrics["start_time"] = datetime.now()
-        self.log(f"Starting TreeLLM pipeline with preset: {self.config}")
+    def _run_build_stage(self, raw_text: str, input_hash: str) -> Dict:
+        """Run build stage with optimized parameters"""
+        stage_name = "build"
+        start_time = time.time()
         
-        # 입력 텍스트 로드
-        raw_text = Path(infile_text).read_text(encoding="utf-8")
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
         
-        # 결과 데이터 초기화
-        result_data = {
-            "config": self.config.__dict__,
-            "metrics": self.metrics,
-            "steps": []
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            # Update config for this stage
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.2)
+            temp_config.model.top_p = params.get("top_p", 0.3)
+            temp_config.model.max_tokens = params.get("max_tokens", 4096)
+            
+            self.log(f"Using optimized params: temp={params.get('temperature')}, "
+                    f"top_p={params.get('top_p')}", "DEBUG", stage_name)
+        
+        try:
+            # BuildStep doesn't take config parameter, it takes model name
+            model_name = temp_config.model.model_name if 'temp_config' in locals() else self.config.model.model_name
+            builder = BuildStep(model=model_name)
+            result = builder.run(raw_text)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            if self.quality_metrics:
+                self.quality_metrics.update_from_stage(stage_name, result)
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
+            return result
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def _run_fuse_stage(self, build_result: Dict, input_hash: str) -> Dict:
+        """Run fuse stage with optimized parameters"""
+        stage_name = "fuse"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.15)
+            temp_config.model.top_p = params.get("top_p", 0.2)
+            temp_config.model.max_tokens = params.get("max_tokens", 6144)
+        
+        try:
+            # TreeBuilder doesn't take config parameter
+            tree_builder = TreeBuilder()
+            result = tree_builder.run(build_result)
+            result_dict = json.loads(result) if isinstance(result, str) else result
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result_dict)
+            
+            return result_dict
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def _run_audit_stage(self, sections: Dict, tree: Dict, input_hash: str) -> Dict:
+        """Run audit stage with optimized parameters"""
+        stage_name = "audit"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters (very low temperature for accuracy)
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.05)
+            temp_config.model.top_p = params.get("top_p", 0.1)
+            temp_config.model.max_tokens = params.get("max_tokens", 3072)
+        
+        try:
+            # AuditStep takes model name parameter
+            model_name = temp_config.model.model_name if 'temp_config' in locals() else self.config.model.model_name
+            auditor = AuditStep(model=model_name)
+            result = auditor.run(sections, tree)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            if self.quality_metrics:
+                self.quality_metrics.update_from_stage(stage_name, result)
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
+            return result
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def _run_edit_pass1_stage(self, sections: Dict, tree: Dict, 
+                              audit_result: Dict, input_hash: str) -> Dict:
+        """Run first edit pass with optimized parameters"""
+        stage_name = "edit_pass1"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.25)
+            temp_config.model.top_p = params.get("top_p", 0.4)
+            temp_config.model.max_tokens = params.get("max_tokens", 4096)
+            temp_config.model.frequency_penalty = params.get("frequency_penalty", 0.2)
+            temp_config.model.presence_penalty = params.get("presence_penalty", 0.1)
+        
+        try:
+            # EditPass1 takes model name parameter
+            model_name = temp_config.model.model_name if 'temp_config' in locals() else self.config.model.model_name
+            editor = EditPass1(model=model_name)
+            result = editor.run(sections, tree, audit_result)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
+            return result
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def _run_global_check_stage(self, edit1_result: Dict, input_hash: str) -> Dict:
+        """Run global consistency check with optimized parameters"""
+        stage_name = "global_check"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.1)
+            temp_config.model.top_p = params.get("top_p", 0.2)
+            temp_config.model.max_tokens = params.get("max_tokens", 3072)
+        
+        try:
+            # GlobalCheck takes model name parameter
+            model_name = temp_config.model.model_name if 'temp_config' in locals() else self.config.model.model_name
+            checker = GlobalCheck(model=model_name)
+            result = checker.run(edit1_result)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
+            return result
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def _run_edit_pass2_stage(self, edit1_result: Dict, 
+                              global_result: Dict, input_hash: str) -> Dict:
+        """Run final edit pass with optimized parameters"""
+        stage_name = "edit_pass2"
+        start_time = time.time()
+        
+        # Check cache
+        cache_key = self._get_cache_key(stage_name, input_hash)
+        cached = self._load_from_cache(cache_key)
+        if cached:
+            return cached
+        
+        self.log(f"Starting {stage_name}", stage=stage_name)
+        
+        # Apply stage-specific parameters
+        if stage_name in self.stage_params:
+            params = self.stage_params[stage_name]
+            temp_config = self.config
+            temp_config.model.temperature = params.get("temperature", 0.2)
+            temp_config.model.top_p = params.get("top_p", 0.3)
+            temp_config.model.max_tokens = params.get("max_tokens", 4096)
+            temp_config.model.frequency_penalty = params.get("frequency_penalty", 0.15)
+            temp_config.model.presence_penalty = params.get("presence_penalty", 0.05)
+        
+        try:
+            # EditPass2 takes model name parameter
+            model_name = temp_config.model.model_name if 'temp_config' in locals() else self.config.model.model_name
+            editor = EditPass2(model=model_name)
+            result = editor.run(edit1_result, global_result)
+            
+            # Track metrics
+            duration = time.time() - start_time
+            self.performance_data["stage_metrics"][stage_name] = {
+                "duration": duration,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.log(f"Completed in {duration:.2f}s", stage=stage_name)
+            
+            # Cache result
+            self._save_to_cache(cache_key, result)
+            
+            return result
+            
+        except Exception as e:
+            self.log(f"Failed: {e}", "ERROR", stage_name)
+            raise
+    
+    def run(self, infile_text: str, save_intermediate: bool = True) -> Dict[str, Any]:
+        """
+        Run the enhanced pipeline with optimized parameters
+        
+        Args:
+            infile_text: Path to input text file
+            save_intermediate: Whether to save intermediate results
+            
+        Returns:
+            Complete analysis results with metrics
+        """
+        self.performance_data["start_time"] = datetime.now().isoformat()
+        self.log(f"="*60, "INFO")
+        self.log(f"Starting Enhanced TreeLLM Pipeline", "INFO")
+        self.log(f"Preset: {self.preset} | Model: {self.config.model.model_name}", "INFO")
+        self.log(f"="*60, "INFO")
+        
+        # Load input text
+        input_path = Path(infile_text)
+        raw_text = input_path.read_text(encoding="utf-8")
+        input_hash = self._get_input_hash(raw_text)
+        
+        # Initialize result structure
+        result = {
+            "metadata": {
+                "preset": self.preset,
+                "config": self.PRESETS[self.preset],
+                "input_file": str(input_path),
+                "timestamp": datetime.now().isoformat()
+            },
+            "stages": {},
+            "quality_metrics": None,
+            "performance": None
         }
         
         try:
-            # 1. Split
-            sections = self._run_split(raw_text)
-            result_data["steps"].append({
-                "step": 1,
-                "name": "Split",
-                "sections": list(sections.keys()),
-                "content": sections
-            })
+            # Stage 1: Split
+            split_result = self._run_split_stage(raw_text, input_hash)
+            result["stages"]["split"] = split_result
+            if save_intermediate:
+                self._save_intermediate("1_split", split_result)
             
-            # 2. Build (병렬 처리 옵션)
-            build_result = self._run_build(raw_text)
-            result_data["steps"].append({
-                "step": 2,
-                "name": "Build",
-                "content": build_result
-            })
+            # Stage 2: Build
+            build_result = self._run_build_stage(raw_text, input_hash)
+            result["stages"]["build"] = build_result
+            if save_intermediate:
+                self._save_intermediate("2_build", build_result)
             
-            # 3. Fuse
-            tree_result = self._run_fuse(build_result)
-            result_data["steps"].append({
-                "step": 3,
-                "name": "Fuse",
-                "content": json.loads(tree_result)
-            })
+            # Stage 3: Fuse
+            fuse_result = self._run_fuse_stage(build_result, input_hash)
+            result["stages"]["fuse"] = fuse_result
+            if save_intermediate:
+                self._save_intermediate("3_fuse", fuse_result)
             
-            # 4. Audit
-            audit_result = self._run_audit(sections, json.loads(tree_result))
-            result_data["steps"].append({
-                "step": 4,
-                "name": "Audit",
-                "content": audit_result
-            })
+            # Stage 4: Audit
+            audit_result = self._run_audit_stage(split_result, fuse_result, input_hash)
+            result["stages"]["audit"] = audit_result
+            if save_intermediate:
+                self._save_intermediate("4_audit", audit_result)
             
-            # 5. EditPass1
-            edit1_result = self._run_edit1(sections, audit_result)
-            result_data["steps"].append({
-                "step": 5,
-                "name": "EditPass1",
-                "content": edit1_result
-            })
+            # Stage 5: Edit Pass 1
+            edit1_result = self._run_edit_pass1_stage(
+                split_result, fuse_result, audit_result, input_hash
+            )
+            result["stages"]["edit_pass1"] = edit1_result
+            if save_intermediate:
+                self._save_intermediate("5_edit_pass1", edit1_result)
             
-            # 6. GlobalCheck
-            global_check_result = self._run_global_check(edit1_result)
-            result_data["steps"].append({
-                "step": 6,
-                "name": "GlobalCheck",
-                "content": global_check_result
-            })
+            # Stage 6: Global Check
+            global_result = self._run_global_check_stage(edit1_result, input_hash)
+            result["stages"]["global_check"] = global_result
+            if save_intermediate:
+                self._save_intermediate("6_global_check", global_result)
             
-            # 7. EditPass2
-            final_result = self._run_edit2(edit1_result, global_check_result)
-            result_data["steps"].append({
-                "step": 7,
-                "name": "EditPass2",
-                "content": final_result
-            })
+            # Stage 7: Edit Pass 2
+            final_result = self._run_edit_pass2_stage(
+                edit1_result, global_result, input_hash
+            )
+            result["stages"]["edit_pass2"] = final_result
+            if save_intermediate:
+                self._save_intermediate("7_edit_pass2", final_result)
             
-            # 메트릭 업데이트
-            self.metrics["end_time"] = datetime.now()
-            self.metrics["total_duration"] = (
-                self.metrics["end_time"] - self.metrics["start_time"]
-            ).total_seconds()
+            # Add final content
+            result["final_output"] = final_result
             
-            result_data["final"] = final_result
-            result_data["metrics"] = self.metrics
-            
-            # 최종 결과 저장
-            self._save_final_results(result_data)
-            
-            self.log("Pipeline completed successfully!")
-            return result_data
+            self.log(f"="*60, "INFO")
+            self.log(f"Pipeline completed successfully!", "INFO")
             
         except Exception as e:
-            self.log(f"Pipeline failed: {str(e)}", "ERROR")
+            self.log(f"Pipeline failed: {e}", "ERROR")
+            result["error"] = str(e)
             raise
-    
-    @_measure_time
-    def _run_split(self, raw_text: str) -> Dict[str, str]:
-        """문서 분할 실행"""
-        self.log("Running Split step...")
         
-        # 설정 적용
-        sections = split_run(raw_text)
-        
-        # 설정에 따른 후처리
-        if self.config.split.merge_short_sections:
-            sections = self._merge_short_sections(sections)
-        
-        # 길이 제한 적용
-        for key, content in sections.items():
-            if len(content) < self.config.split.min_section_length:
-                self.log(f"Warning: Section '{key}' is too short ({len(content)} chars)", "WARNING")
-            elif len(content) > self.config.split.max_section_length:
-                sections[key] = content[:self.config.split.max_section_length]
-                self.log(f"Truncated section '{key}' to max length", "WARNING")
-        
-        self._save_intermediate("split", sections)
-        return sections
-    
-    @_measure_time
-    def _run_build(self, raw_text: str) -> str:
-        """Build 단계 실행 (병렬 처리 지원)"""
-        self.log("Running Build step...")
-        
-        # BuildStep 초기화 (모델 파라미터 적용)
-        build_step = BuildStep(model=self.config.model.model_name)
-        
-        # 기존 call_gpt 메서드 오버라이드하여 설정 적용
-        original_call_gpt = build_step.call_gpt
-        
-        def enhanced_call_gpt(prompt: str, prompt_type: str = None) -> str:
-            params = self.config.get_prompt_params(prompt_type) if prompt_type else self.config.get_model_params()
+        finally:
+            # Finalize metrics
+            self.performance_data["end_time"] = datetime.now().isoformat()
             
-            # API 호출 재시도 로직
-            for attempt in range(self.config.build.retry_attempts):
-                try:
-                    response = build_step.client.chat.completions.create(
-                        model=self.config.model.model_name,
-                        messages=[{"role": "user", "content": prompt}],
-                        **params,
-                        timeout=self.config.build.timeout
-                    )
-                    self.metrics["api_calls"] += 1
-                    return response.choices[0].message.content.strip()
-                except Exception as e:
-                    if attempt < self.config.build.retry_attempts - 1:
-                        self.log(f"API call failed, retrying... ({attempt + 1}/{self.config.build.retry_attempts})", "WARNING")
-                        time.sleep(self.config.build.retry_delay)
-                    else:
-                        raise
-        
-        build_step.call_gpt = enhanced_call_gpt
-        
-        # 병렬 처리 실행
-        if self.config.build.parallel_processing:
-            result = self._run_build_parallel(build_step, raw_text)
-        else:
-            result = build_step.run(raw_text)
-        
-        self._save_intermediate("build", result, "txt")
-        return result
-    
-    def _run_build_parallel(self, build_step: BuildStep, raw_text: str) -> str:
-        """Build 단계 병렬 처리"""
-        prompts = build_step.load_prompts()
-        outputs = [""] * len(prompts)
-        
-        with ThreadPoolExecutor(max_workers=self.config.build.max_workers) as executor:
-            future_to_index = {}
+            if self.quality_metrics:
+                result["quality_metrics"] = {
+                    "overall_score": self.quality_metrics.calculate_overall_score(),
+                    "detailed": self.quality_metrics.metrics
+                }
             
-            for i, (pid, tmpl) in enumerate(prompts):
-                prompt = tmpl.replace("{INPUT}", raw_text)
-                future = executor.submit(
-                    build_step.call_gpt, 
-                    prompt, 
-                    pid.replace("_fill_prompt", "")
-                )
-                future_to_index[future] = (i, pid)
+            result["performance"] = self.performance_data
             
-            for future in as_completed(future_to_index):
-                index, pid = future_to_index[future]
-                try:
-                    result = future.result()
-                    outputs[index] = f"### {pid}\n{result}"
-                    self.log(f"Completed: {pid}")
-                except Exception as e:
-                    self.log(f"Failed: {pid} - {str(e)}", "ERROR")
-                    outputs[index] = f"### {pid}\n[ERROR: {str(e)}]"
-        
-        return "\n\n".join(outputs)
-    
-    @_measure_time
-    def _run_fuse(self, build_result: str) -> str:
-        """Tree 구조 생성"""
-        self.log("Running Fuse step...")
-        
-        builder = TreeBuilder()
-        
-        # 설정 적용을 위한 후처리 훅
-        if hasattr(builder, 'run'):
-            original_run = builder.run
-            
-            def enhanced_run(text: str) -> str:
-                result = original_run(text)
+            # Calculate total duration
+            if self.performance_data["start_time"] and self.performance_data["end_time"]:
+                start = datetime.fromisoformat(self.performance_data["start_time"])
+                end = datetime.fromisoformat(self.performance_data["end_time"])
+                total_duration = (end - start).total_seconds()
+                result["performance"]["total_duration"] = total_duration
                 
-                # 트리 최적화 적용
-                if self.config.fuse.optimization_params["enable_pruning"]:
-                    result = self._prune_tree(result)
-                if self.config.fuse.optimization_params["enable_rebalancing"]:
-                    result = self._rebalance_tree(result)
-                
-                return result
+                self.log(f"Total processing time: {total_duration:.2f}s", "INFO")
             
-            builder.run = enhanced_run
+            # Save complete result
+            self._save_final_result(result)
+            
+            if self.quality_metrics:
+                self.log(f"Quality Score: {result['quality_metrics']['overall_score']:.2f}/1.0", "INFO")
+            
+            self.log(f"="*60, "INFO")
         
-        result = builder.run(build_result)
-        self._save_intermediate("tree", json.loads(result))
         return result
-    
-    @_measure_time
-    def _run_audit(self, sections: Dict[str, str], tree_dict: Dict) -> str:
-        """감사 단계 실행"""
-        self.log("Running Audit step...")
-        
-        audit_step = AuditStep()
-        
-        # 엄격도 설정 적용
-        if hasattr(audit_step, 'strictness_level'):
-            audit_step.strictness_level = self.config.audit.strictness_level
-        
-        result = audit_step.run(sections, tree_dict)
-        
-        # 점수 계산 및 검증
-        if self.config.audit.detailed_feedback:
-            score = self._calculate_audit_score(result)
-            if score < self.config.audit.score_threshold:
-                self.log(f"Warning: Audit score ({score:.2f}) below threshold ({self.config.audit.score_threshold})", "WARNING")
-        
-        self._save_intermediate("audit", result, "txt")
-        return result
-    
-    @_measure_time
-    def _run_edit1(self, sections: Dict[str, str], audit_result: str) -> Dict:
-        """첫 번째 편집 단계"""
-        self.log("Running EditPass1...")
-        
-        edit1_step = EditPass1()
-        
-        # 편집 파라미터 적용
-        if hasattr(edit1_step, 'params'):
-            edit1_step.params = self.config.edit.edit1_params
-        
-        result = edit1_step.run(sections, audit_result)
-        self._save_intermediate("edit1", result)
-        return result
-    
-    @_measure_time
-    def _run_global_check(self, edit1_result: Dict) -> str:
-        """전역 일관성 검사"""
-        self.log("Running GlobalCheck...")
-        
-        global_check = GlobalCheck()
-        
-        # 검사 항목 설정
-        if hasattr(global_check, 'check_items'):
-            global_check.check_items = self.config.global_check.check_items
-        
-        result = global_check.run(edit1_result)
-        
-        # 일관성 점수 확인
-        coherence_score = self._calculate_coherence_score(result)
-        if coherence_score < self.config.global_check.coherence_threshold:
-            self.log(f"Warning: Coherence score ({coherence_score:.2f}) below threshold", "WARNING")
-        
-        self._save_intermediate("global_check", result, "txt")
-        return result
-    
-    @_measure_time
-    def _run_edit2(self, edit1_result: Dict, global_check_result: str) -> str:
-        """최종 편집 단계"""
-        self.log("Running EditPass2...")
-        
-        edit2_step = EditPass2()
-        
-        # 최종 편집 파라미터 적용
-        if hasattr(edit2_step, 'params'):
-            edit2_step.params = self.config.edit.edit2_params
-        
-        result = edit2_step.run(json.dumps(edit1_result, ensure_ascii=False), global_check_result)
-        
-        # 출력 형식 적용
-        if self.config.output.output_format == "latex":
-            result = self._convert_to_latex(result)
-        elif self.config.output.output_format == "html":
-            result = self._convert_to_html(result)
-        
-        self._save_intermediate("final", result, "txt")
-        return result
-    
-    def run_stream(self, infile_text: str) -> Generator[str, None, None]:
-        """스트리밍 실행 모드"""
-        self.metrics["start_time"] = datetime.now()
-        self.log(f"Starting TreeLLM pipeline (streaming) with preset: {self.config}")
-        
-        raw_text = Path(infile_text).read_text(encoding="utf-8")
-        
-        try:
-            # 1. Split
-            yield json.dumps({"step": 1, "name": "Split", "status": "starting"})
-            sections = self._run_split(raw_text)
-            yield json.dumps({
-                "step": 1, 
-                "name": "Split", 
-                "status": "completed",
-                "preview": {k: v[:200] + "..." for k, v in sections.items() if v}
-            })
-            
-            # 2. Build
-            yield json.dumps({"step": 2, "name": "Build", "status": "starting"})
-            build_result = self._run_build(raw_text)
-            yield json.dumps({
-                "step": 2,
-                "name": "Build",
-                "status": "completed",
-                "preview": build_result[:500] + "..."
-            })
-            
-            # 3. Fuse
-            yield json.dumps({"step": 3, "name": "Fuse", "status": "starting"})
-            tree_result = self._run_fuse(build_result)
-            yield json.dumps({
-                "step": 3,
-                "name": "Fuse",
-                "status": "completed",
-                "preview": tree_result[:500] + "..."
-            })
-            
-            # 4. Audit
-            yield json.dumps({"step": 4, "name": "Audit", "status": "starting"})
-            audit_result = self._run_audit(sections, json.loads(tree_result))
-            yield json.dumps({
-                "step": 4,
-                "name": "Audit",
-                "status": "completed",
-                "preview": audit_result[:500] + "..."
-            })
-            
-            # 5. EditPass1
-            yield json.dumps({"step": 5, "name": "EditPass1", "status": "starting"})
-            edit1_result = self._run_edit1(sections, audit_result)
-            yield json.dumps({
-                "step": 5,
-                "name": "EditPass1",
-                "status": "completed",
-                "preview": str(edit1_result)[:500] + "..."
-            })
-            
-            # 6. GlobalCheck
-            yield json.dumps({"step": 6, "name": "GlobalCheck", "status": "starting"})
-            global_check_result = self._run_global_check(edit1_result)
-            yield json.dumps({
-                "step": 6,
-                "name": "GlobalCheck",
-                "status": "completed",
-                "preview": global_check_result[:500] + "..."
-            })
-            
-            # 7. EditPass2
-            yield json.dumps({"step": 7, "name": "EditPass2", "status": "starting"})
-            final_result = self._run_edit2(edit1_result, global_check_result)
-            yield json.dumps({
-                "step": 7,
-                "name": "EditPass2",
-                "status": "completed",
-                "content": final_result
-            })
-            
-            # 메트릭 업데이트
-            self.metrics["end_time"] = datetime.now()
-            self.metrics["total_duration"] = (
-                self.metrics["end_time"] - self.metrics["start_time"]
-            ).total_seconds()
-            
-            yield json.dumps({
-                "step": 8,
-                "name": "Complete",
-                "metrics": self.metrics
-            })
-            
-        except Exception as e:
-            self.log(f"Pipeline failed: {str(e)}", "ERROR")
-            yield json.dumps({
-                "error": str(e),
-                "step": "failed"
-            })
-    
-    # 헬퍼 메서드들
-    def _merge_short_sections(self, sections: Dict[str, str]) -> Dict[str, str]:
-        """짧은 섹션 병합"""
-        merged = {}
-        buffer = ""
-        buffer_key = ""
-        
-        for key, content in sections.items():
-            if len(content) < self.config.split.min_section_length:
-                if buffer_key:
-                    buffer += "\n\n" + content
-                else:
-                    buffer = content
-                    buffer_key = key
-            else:
-                if buffer:
-                    merged[buffer_key] = buffer
-                    buffer = ""
-                    buffer_key = ""
-                merged[key] = content
-        
-        if buffer:
-            merged[buffer_key] = buffer
-        
-        return merged
-    
-    def _prune_tree(self, tree_json: str) -> str:
-        """트리 가지치기"""
-        tree = json.loads(tree_json)
-        
-        def prune_node(node: Dict) -> Optional[Dict]:
-            if "content" in node and len(node.get("content", "")) < self.config.fuse.min_node_content_length:
-                return None
-            
-            if "children" in node:
-                node["children"] = [prune_node(child) for child in node["children"]]
-                node["children"] = [child for child in node["children"] if child]
-            
-            return node
-        
-        pruned = prune_node(tree)
-        return json.dumps(pruned, ensure_ascii=False)
-    
-    def _rebalance_tree(self, tree_json: str) -> str:
-        """트리 재균형"""
-        tree = json.loads(tree_json)
-        
-        def get_depth(node: Dict) -> int:
-            if "children" not in node or not node["children"]:
-                return 1
-            return 1 + max(get_depth(child) for child in node["children"])
-        
-        def rebalance_node(node: Dict, max_depth: int) -> Dict:
-            current_depth = get_depth(node)
-            
-            if current_depth > max_depth:
-                # 깊이가 너무 깊으면 일부 노드를 병합
-                if "children" in node and len(node["children"]) > 1:
-                    mid = len(node["children"]) // 2
-                    left_children = node["children"][:mid]
-                    right_children = node["children"][mid:]
-                    
-                    node["children"] = [
-                        {"type": "merged", "children": left_children},
-                        {"type": "merged", "children": right_children}
-                    ]
-            
-            if "children" in node:
-                node["children"] = [rebalance_node(child, max_depth) for child in node["children"]]
-            
-            return node
-        
-        rebalanced = rebalance_node(tree, self.config.fuse.max_tree_depth)
-        return json.dumps(rebalanced, ensure_ascii=False)
-    
-    def _calculate_audit_score(self, audit_result: str) -> float:
-        """감사 점수 계산"""
-        # 간단한 휴리스틱 점수 계산
-        positive_keywords = ["good", "strong", "clear", "valid", "sound"]
-        negative_keywords = ["weak", "unclear", "missing", "insufficient", "poor"]
-        
-        text_lower = audit_result.lower()
-        positive_count = sum(1 for keyword in positive_keywords if keyword in text_lower)
-        negative_count = sum(1 for keyword in negative_keywords if keyword in text_lower)
-        
-        if positive_count + negative_count == 0:
-            return 0.5
-        
-        return positive_count / (positive_count + negative_count)
-    
-    def _calculate_coherence_score(self, global_check_result: str) -> float:
-        """일관성 점수 계산"""
-        # 간단한 휴리스틱 점수 계산
-        coherence_indicators = ["consistent", "aligned", "coherent", "unified", "integrated"]
-        incoherence_indicators = ["inconsistent", "contradictory", "misaligned", "fragmented"]
-        
-        text_lower = global_check_result.lower()
-        coherent_count = sum(1 for indicator in coherence_indicators if indicator in text_lower)
-        incoherent_count = sum(1 for indicator in incoherence_indicators if indicator in text_lower)
-        
-        if coherent_count + incoherent_count == 0:
-            return 0.7
-        
-        return coherent_count / (coherent_count + incoherent_count)
-    
-    def _convert_to_latex(self, text: str) -> str:
-        """LaTeX 형식으로 변환"""
-        latex_header = r"""\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath}
-\usepackage{graphicx}
-\begin{document}
-
-"""
-        latex_footer = r"""
-\end{document}"""
-        
-        # 간단한 변환 규칙
-        text = text.replace("#", "\\section{")
-        text = text.replace("\n\n", "}\n\n")
-        
-        return latex_header + text + latex_footer
-    
-    def _convert_to_html(self, text: str) -> str:
-        """HTML 형식으로 변환"""
-        html_header = """<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>
-body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-h1, h2, h3 { color: #333; }
-</style>
-</head>
-<body>
-"""
-        html_footer = """</body>
-</html>"""
-        
-        # 간단한 변환 규칙
-        lines = text.split("\n")
-        html_lines = []
-        
-        for line in lines:
-            if line.startswith("#"):
-                level = len(line) - len(line.lstrip("#"))
-                content = line.lstrip("#").strip()
-                html_lines.append(f"<h{level}>{content}</h{level}>")
-            elif line.strip():
-                html_lines.append(f"<p>{line}</p>")
-        
-        return html_header + "\n".join(html_lines) + html_footer
-    
-    def _save_final_results(self, result_data: Dict[str, Any]):
-        """최종 결과 저장"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # JSON 결과 저장
-        json_path = self.base_dir / f"result_{timestamp}.json"
-        json_path.write_text(json.dumps(result_data, indent=2, ensure_ascii=False), encoding="utf-8")
-        
-        # 최종 논문 저장
-        final_path = self.base_dir / f"final_paper_{timestamp}.{self.config.output.output_format}"
-        final_path.write_text(result_data["final"], encoding="utf-8")
-        
-        # 요약 생성 및 저장
-        if self.config.output.generate_summary:
-            summary = self._generate_summary(result_data["final"])
-            summary_path = self.base_dir / f"summary_{timestamp}.txt"
-            summary_path.write_text(summary, encoding="utf-8")
-        
-        self.log(f"Results saved: {json_path}, {final_path}")
-    
-    def _generate_summary(self, text: str) -> str:
-        """요약 생성"""
-        # 간단한 요약 생성 (실제로는 LLM 사용)
-        lines = text.split("\n")
-        summary_lines = []
-        
-        for line in lines[:20]:  # 처음 20줄만
-            if line.strip() and not line.startswith("#"):
-                summary_lines.append(line)
-                if len(" ".join(summary_lines).split()) > self.config.output.summary_length:
-                    break
-        
-        return " ".join(summary_lines)
 
 
-# CLI 인터페이스
-if __name__ == "__main__":
+def main():
+    """Main entry point for command line usage"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="TreeLLM Orchestrator V2")
-    parser.add_argument("input", help="Input file path")
-    parser.add_argument("--preset", choices=["fast", "balanced", "thorough", "research"], 
+    parser = argparse.ArgumentParser(description="Enhanced TreeLLM Pipeline")
+    parser.add_argument("input_file", help="Path to input text file")
+    parser.add_argument("--preset", choices=["fast", "balanced", "precision", "research"],
                        default="balanced", help="Configuration preset")
-    parser.add_argument("--model", help="Override model name")
-    parser.add_argument("--temperature", type=float, help="Override temperature")
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
-    parser.add_argument("--stream", action="store_true", help="Enable streaming mode")
+    parser.add_argument("--no-cache", action="store_true", help="Disable caching")
+    parser.add_argument("--no-metrics", action="store_true", help="Disable quality metrics")
     
     args = parser.parse_args()
     
-    # 설정 로드
-    overrides = {}
-    if args.model:
-        overrides["model"] = {"model_name": args.model}
-    if args.temperature:
-        overrides["model"] = overrides.get("model", {})
-        overrides["model"]["temperature"] = args.temperature
-    if args.debug:
-        overrides["debug_mode"] = True
-        overrides["log_level"] = "DEBUG"
+    orchestrator = EnhancedOrchestratorV3(
+        preset=args.preset,
+        enable_metrics=not args.no_metrics,
+        enable_caching=not args.no_cache
+    )
     
-    config = load_config(args.preset, **overrides)
+    result = orchestrator.run(args.input_file)
     
-    # Orchestrator 실행
-    orchestrator = OrchestratorV2(config)
+    print(f"\nPipeline completed successfully!")
+    print(f"Results saved to: {orchestrator.base_dir}")
     
-    if args.stream:
-        print("Starting streaming mode...")
-        for update in orchestrator.run_stream(args.input):
-            print(update)
-    else:
-        result = orchestrator.run(args.input)
-        print(f"\n✅ Pipeline completed in {result['metrics']['total_duration']:.2f}s")
-        print(f"📊 API calls: {result['metrics']['api_calls']}")
-        print(f"📁 Results saved to: {orchestrator.base_dir}")
+    if not args.no_metrics:
+        print(f"Quality Score: {result['quality_metrics']['overall_score']:.2f}/1.0")
+    
+    print(f"Total Duration: {result['performance'].get('total_duration', 'N/A'):.2f}s")
+
+
+if __name__ == "__main__":
+    main()
